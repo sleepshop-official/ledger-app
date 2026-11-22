@@ -227,7 +227,7 @@
   </div>
 
   <!-- 底部懸浮記帳按鈕 -->
-  <div id="floatingAddBtn" class="fixed bottom-18 left-0 right-0 flex justify-center z-30 pointer-events-none">
+  <div id="floatingAddBtn" class="fixed bottom-[72px] left-0 right-0 flex justify-center z-30 pointer-events-none">
     <button onclick="openEntryModal()" class="pointer-events-auto bg-[#CFD8E6] hover:bg-[#BFCBE0] text-[#6E5B54] font-bold px-7 py-3 rounded-full border-2 border-[#FFFDFB] shadow-md flex items-center gap-2 transition transform active:scale-95">
       <span class="w-5 h-5 rounded-full bg-[#F5E5B8] border border-[#9E8880] text-[#7A655E] flex items-center justify-center text-sm font-bold">＋</span>
       <span>記一筆帳</span>
@@ -344,8 +344,9 @@
           <input type="number" id="entryAmount" min="1" step="1" required class="kawaii-input w-full font-bold text-lg px-3 py-2 rounded-2xl" />
         </div>
 
-        <div class="flex gap-2.5 pt-2">
-          <button type="button" onclick="closeEntryModal()" class="flex-1 py-2.5 rounded-2xl bg-[#F9EAEF] border border-[#E2D5CE] text-[#8C766E] font-bold text-sm">取消</button>
+        <div class="flex gap-2 pt-2">
+          <button type="button" id="btnDeleteEntryInModal" onclick="deleteEntryFromModal()" class="hidden px-4 py-2.5 rounded-2xl bg-[#F9EAEF] border border-[#E5BEC7] text-[#C97B8E] font-bold text-sm">刪除</button>
+          <button type="button" onclick="closeEntryModal()" class="flex-1 py-2.5 rounded-2xl bg-[#FAF5F0] border border-[#E2D5CE] text-[#8C766E] font-bold text-sm">取消</button>
           <button type="submit" class="flex-1 py-2.5 rounded-2xl bg-[#CFD8E6] border border-[#B3C1D6] text-[#6E5B54] font-bold text-sm shadow-xs">儲存紀錄</button>
         </div>
       </form>
@@ -1896,6 +1897,7 @@
         const target = appData.entries.find(e => e.id === id);
         if (!target) return;
         title.textContent = '編輯紀錄';
+        document.getElementById('btnDeleteEntryInModal').classList.remove('hidden');
         document.getElementById('editId').value = target.id;
         document.getElementById('entryDate').value = target.date;
         document.getElementById('entryStore').value = target.store || '';
@@ -1907,6 +1909,7 @@
         setEntryType(target.type || 'expense', target.category);
       } else {
         title.textContent = '新增一筆帳';
+        document.getElementById('btnDeleteEntryInModal').classList.add('hidden');
         document.getElementById('editId').value = '';
         document.getElementById('entryDate').value = new Date().toISOString().split('T')[0];
         document.getElementById('entryStore').value = '';
@@ -1925,6 +1928,12 @@
       const modal = document.getElementById('entryModal');
       modal.classList.add('hidden');
       modal.classList.remove('flex');
+    }
+    function deleteEntryFromModal() {
+      const id = document.getElementById('editId').value;
+      if (!id) return;
+      deleteEntry(id);
+      closeEntryModal();
     }
 
     function applyWalletDelta(walletId, type, amount, direction = 1) {
