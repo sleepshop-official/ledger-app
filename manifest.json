@@ -1,0 +1,15 @@
+{
+  "name": "記帳本",
+  "short_name": "記帳本",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#FAF5F0",
+  "theme_color": "#D5E3F5",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='44' fill='%23FAF5F0'/%3E%3Cpath d='M56 136 H136 C154 136 166 123 166 107 C166 93 155 81 141 79 C137 58 118 44 96 44 C77 44 60 55 54 72 C38 74 26 88 26 105 C26 122 39 136 56 136 Z' fill='%23FFFDFB' stroke='%239E8880' stroke-width='7'/%3E%3Cpath d='M52 122 H140' stroke='%23CFD8E6' stroke-width='10' stroke-linecap='round'/%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ]
+}
