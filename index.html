@@ -1010,7 +1010,7 @@
 
     function openProductsModal() {
       const listEl = document.getElementById('productInputsList');
-      const itemsToRender = currentProductList.length > 0 ? [...currentProductList] : ['', ''];
+      const itemsToRender = currentProductList.length > 0 ? [...currentProductList] : [''];
       listEl.innerHTML = '';
       itemsToRender.forEach((val, idx) => {
         appendProductRowHtml(idx + 1, val);
@@ -1317,10 +1317,7 @@
                       ${isIncome ? '+' : '-'}NT$${Number(item.amount).toLocaleString()}
                     </div>
                   </div>
-                  <div class="flex flex-col gap-1">
-                    <button onclick="openEntryModal('${item.id}')" class="text-[11px] font-bold text-[#7E8FA6] hover:text-[#5B6D85] px-1">編輯</button>
-                    <button onclick="deleteEntry('${item.id}')" class="text-[11px] text-[#C4B4AE] hover:text-[#C97B8E] px-1">刪除</button>
-                  </div>
+                 <button onclick="openEntryModal('${item.id}')" class="px-2.5 py-1 rounded-xl bg-[#FAF5F0] hover:bg-[#EBF0F7] border border-[#E2D5CE] text-[11px] font-bold text-[#7E8FA6] active:scale-95">編輯</button>
                 </div>
               </div>
 
