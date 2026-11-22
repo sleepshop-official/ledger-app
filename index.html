@@ -67,7 +67,6 @@
   <div id="viewLedger">
     <header class="pt-4 pb-2 px-4 sticky top-0 z-20" style="background: linear-gradient(180deg, rgba(213,227,245,0.96) 0%, rgba(232,240,250,0.88) 42%, rgba(250,245,240,0) 68%);">
       <div class="max-w-md mx-auto">
-        <!-- 標題列與功能按鈕 -->
         <div class="flex items-center justify-between mb-2.5">
           <div class="flex items-center gap-2.5">
             <div id="headerLogo" class="w-11 h-11 rounded-2xl bg-[#FFFDFB] flex items-center justify-center border-[1.5px] border-[#E2D5CE] shadow-2xs p-1"></div>
@@ -90,7 +89,6 @@
           </div>
         </div>
 
-        <!-- 多帳本切換列 -->
         <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-2.5">
           <div id="ledgerTabs" class="flex items-center gap-1.5"></div>
           <button onclick="createLedger()" class="shrink-0 bg-[#FFFDFB]/90 hover:bg-white text-[#8C766E] text-xs font-bold px-3 py-1.5 rounded-full border border-dashed border-[#B09C94] transition active:scale-95">
@@ -98,7 +96,6 @@
           </button>
         </div>
 
-        <!-- 目前帳本收支總覽卡片 -->
         <div class="kawaii-card rounded-3xl p-4">
           <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-dashed border-[#E2D5CE]">
             <div class="flex items-center gap-1.5">
@@ -130,7 +127,6 @@
       </div>
     </header>
 
-    <!-- 每日收支卡片列表 -->
     <main class="max-w-md mx-auto px-4 space-y-4 mt-2" id="dailyCardsContainer"></main>
   </div>
 
@@ -260,7 +256,6 @@
         <button onclick="closeEntryModal()" class="w-7 h-7 rounded-full bg-[#F9EAEF] border border-[#E2D5CE] text-[#8C766E] font-bold text-sm flex items-center justify-center">✕</button>
       </div>
 
-      <!-- 支出 / 收入 切換 -->
       <div class="grid grid-cols-2 gap-2 p-1 bg-[#FAF5F0] border border-[#E2D5CE] rounded-2xl mb-3.5">
         <button type="button" id="btnTypeExpense" onclick="setEntryType('expense')" class="py-2 rounded-xl font-bold text-sm transition">
           支出
@@ -274,7 +269,6 @@
         <input type="hidden" id="editId" />
         <input type="hidden" id="entryType" value="expense" />
 
-        <!-- 付款 / 入帳錢包選擇 -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
             <label id="labelWalletSelect" class="text-xs font-bold text-[#6E8099]">選擇付款錢包（自動扣款）</label>
@@ -286,7 +280,6 @@
           <input type="hidden" id="entryWalletId" required />
         </div>
 
-        <!-- 類別選擇 -->
         <div>
           <div class="flex items-center justify-between mb-1.5">
             <label class="text-xs font-bold text-[#8C766E]">選擇類別</label>
@@ -298,13 +291,11 @@
           <input type="hidden" id="entryCategory" required />
         </div>
 
-        <!-- 1. 日期 -->
         <div>
           <label class="block text-xs font-bold text-[#8C766E] mb-1">日期</label>
           <input type="date" id="entryDate" required class="kawaii-input w-full font-medium px-3 py-2 rounded-2xl" />
         </div>
 
-        <!-- 2. 店家＋右側彈窗商品明細按鈕（僅支出顯示） -->
         <div id="expenseStoreGroup" class="relative">
           <label class="block text-xs font-bold text-[#8C766E] mb-1">店家</label>
           <div class="flex gap-2 items-center">
@@ -332,13 +323,11 @@
           </div>
         </div>
 
-        <!-- 3. 備註 -->
         <div>
           <label class="block text-xs font-bold text-[#8C766E] mb-1">備註</label>
           <input type="text" id="entryNote" class="kawaii-input w-full font-medium px-3 py-2 rounded-2xl" />
         </div>
 
-        <!-- 4. 金額 -->
         <div>
           <label class="block text-xs font-bold text-[#8C766E] mb-1">金額 (NT$)</label>
           <input type="number" id="entryAmount" min="1" step="1" required class="kawaii-input w-full font-bold text-lg px-3 py-2 rounded-2xl" />
@@ -374,7 +363,7 @@
     </div>
   </div>
 
-  <!-- ==================== 彈窗 1C：刪除帳本（含退回錢包餘額選項） ==================== -->
+  <!-- ==================== 彈窗 1C：刪除帳本 ==================== -->
   <div id="deleteLedgerModal" class="fixed inset-0 bg-[#7A655E]/35 backdrop-blur-xs hidden items-center justify-center z-[65] px-4">
     <div class="kawaii-card w-full max-w-sm rounded-3xl p-5">
       <div class="flex justify-between items-center mb-2">
@@ -482,7 +471,6 @@
         <button onclick="closeBackupModal()" class="w-7 h-7 rounded-full bg-[#F9EAEF] border border-[#E2D5CE] text-[#8C766E] font-bold text-sm flex items-center justify-center">✕</button>
       </div>
 
-      <!-- 個人帳號名稱 -->
       <div class="bg-[#EBF0F7]/75 border border-[#D4DFED] rounded-2xl p-3.5 mb-3">
         <div class="text-xs font-bold text-[#6E8099] mb-2">個人帳號名稱設置</div>
         <div class="flex gap-2">
@@ -492,7 +480,6 @@
         <div id="lastBackupStatus" class="text-[11px] text-[#7E8FA6] mt-2">上次備份時間：尚未備份</div>
       </div>
 
-      <!-- 方法一：完整備份檔 -->
       <div class="bg-[#FAF5F0] border border-[#E2D5CE] rounded-2xl p-3.5 mb-3 space-y-2">
         <div class="text-xs font-bold text-[#7A655E]">方法一：完整備份檔（可存入 Google 雲端硬碟）</div>
         <p class="text-[11px] text-[#9A857D] leading-relaxed">
@@ -509,7 +496,6 @@
         </div>
       </div>
 
-      <!-- 方法二：一鍵備份碼 -->
       <div class="bg-[#FAF5F0] border border-[#E2D5CE] rounded-2xl p-3.5 mb-3 space-y-2">
         <div class="text-xs font-bold text-[#7A655E]">方法二：一鍵備份碼（貼到 LINE 或記事本）</div>
         <div class="flex gap-2">
@@ -522,7 +508,6 @@
         </div>
       </div>
 
-      <!-- 刪除帳號 / 全部重置 -->
       <div class="bg-[#F9EAEF]/75 border border-[#E5BEC7] rounded-2xl p-3.5 space-y-2">
         <div class="text-xs font-bold text-[#B36B7C]">帳號管理與重置</div>
         <p class="text-[11px] text-[#9A857D] leading-relaxed">
@@ -580,31 +565,10 @@
       </div>
     </div>
   </div>
-
   <script>
-    const CLOUD_LOGO_SVG = `
-      <svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M14 34 H34 C38.5 34 41.5 30.8 41.5 26.8 C41.5 23.2 38.8 20.3 35.3 19.8 C34.2 14.5 29.5 11 24 11 C19.2 11 15.1 13.8 13.4 18 C9.5 18.6 6.5 22 6.5 26.2 C6.5 30.6 9.8 34 14 34 Z" fill="#FFFDFB"/>
-        <path d="M13 30.5 H35" stroke="#CFD8E6" stroke-width="2.6"/>
-        <path d="M14.5 18.5 C16.5 18 18 19 18.8 20.5" stroke-width="1.5" opacity="0.65"/>
-        <path d="M38 10 L39 12.2 L41.3 12.5 L39.6 14.1 L40 16.4 L38 15.3 L36 16.4 L36.4 14.1 L34.7 12.5 L37 12.2 Z" fill="#F5E5B8" stroke-width="1.3"/>
-      </svg>`;
-
-    const CHART_NAV_SVG = `
-      <svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="24" cy="24" r="15" fill="#FFFDFB"/>
-        <path d="M24 9 A15 15 0 0 1 38.5 28 L24 24 Z" fill="#F2D5DC"/>
-        <path d="M24 24 L24 9 A15 15 0 0 0 11 31.5 Z" fill="#CFD8E6"/>
-        <circle cx="24" cy="24" r="5" fill="#FFFDFB"/>
-      </svg>`;
-
-    const WALLET_NAV_SVG = `
-      <svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="8" y="13" width="32" height="24" rx="6" fill="#FFFDFB"/>
-        <path d="M8 20 H40" stroke="#CFD8E6" stroke-width="3"/>
-        <rect x="29" y="23" width="11" height="7" rx="3" fill="#F5E5B8"/>
-        <circle cx="33" cy="26.5" r="1.3" fill="currentColor"/>
-      </svg>`;
+    const CLOUD_LOGO_SVG = `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 34 H34 C38.5 34 41.5 30.8 41.5 26.8 C41.5 23.2 38.8 20.3 35.3 19.8 C34.2 14.5 29.5 11 24 11 C19.2 11 15.1 13.8 13.4 18 C9.5 18.6 6.5 22 6.5 26.2 C6.5 30.6 9.8 34 14 34 Z" fill="#FFFDFB"/><path d="M13 30.5 H35" stroke="#CFD8E6" stroke-width="2.6"/><path d="M14.5 18.5 C16.5 18 18 19 18.8 20.5" stroke-width="1.5" opacity="0.65"/><path d="M38 10 L39 12.2 L41.3 12.5 L39.6 14.1 L40 16.4 L38 15.3 L36 16.4 L36.4 14.1 L34.7 12.5 L37 12.2 Z" fill="#F5E5B8" stroke-width="1.3"/></svg>`;
+    const CHART_NAV_SVG = `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="15" fill="#FFFDFB"/><path d="M24 9 A15 15 0 0 1 38.5 28 L24 24 Z" fill="#F2D5DC"/><path d="M24 24 L24 9 A15 15 0 0 0 11 31.5 Z" fill="#CFD8E6"/><circle cx="24" cy="24" r="5" fill="#FFFDFB"/></svg>`;
+    const WALLET_NAV_SVG = `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="13" width="32" height="24" rx="6" fill="#FFFDFB"/><path d="M8 20 H40" stroke="#CFD8E6" stroke-width="3"/><rect x="29" y="23" width="11" height="7" rx="3" fill="#F5E5B8"/><circle cx="33" cy="26.5" r="1.3" fill="currentColor"/></svg>`;
 
     const ICONS_DB = {
       toast: { label: '吐司', group: '食物飲料', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20c-3 0-5-2.5-5-5.5C7 10.5 11 8 24 8s17 2.5 17 6.5c0 3-2 5.5-5 5.5v17a3 3 0 0 1-3 3H15a3 3 0 0 1-3-3V20z" fill="#FFFDFB"/><path d="M15 21v14h18V21" fill="#F5E5B8" stroke="none"/><path d="M21 25c1 1 2 1 3 0M25 25c1 1 2 1 3 0" stroke-width="1.6"/></svg>` },
@@ -614,16 +578,13 @@
       boba: { label: '手搖飲', group: '食物飲料', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 17h18l-2.5 22h-13L15 17z" fill="#FFFDFB"/><path d="M16.5 28h15l-1 11h-13l-1-11z" fill="#F5E5B8" stroke="none"/><path d="M13 17h22M26 17l4-8"/><circle cx="21" cy="34" r="1.5" fill="#8C766E" stroke="none"/><circle cx="27" cy="34" r="1.5" fill="#8C766E" stroke="none"/></svg>` },
       coffee: { label: '咖啡', group: '食物飲料', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19h20v12a8 8 0 0 1-8 8h-4a8 8 0 0 1-8-8V19z" fill="#FFFDFB"/><path d="M32 21h3a4 4 0 0 1 0 8h-3"/><path d="M18 12c0-2 2-2 2-4M24 12c0-2 2-2 2-4" stroke="#B6C5DC"/></svg>` },
       cake: { label: '甜點', group: '食物飲料', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 25h28v13H10V25z" fill="#FFFDFB"/><path d="M10 25l14-9 14 9" fill="#F2D5DC"/><circle cx="24" cy="13" r="3" fill="#F2D5DC"/></svg>` },
-
       bus: { label: '公車捷運', group: '交通出行', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="11" y="10" width="26" height="25" rx="6" fill="#CFD8E6"/><rect x="15" y="15" width="18" height="10" rx="2" fill="#FFFDFB"/><circle cx="17" cy="30" r="1.8" fill="#F5E5B8"/><circle cx="31" cy="30" r="1.8" fill="#F5E5B8"/><path d="M15 35v4M33 35v4"/></svg>` },
       scooter: { label: '機車加油', group: '交通出行', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="33" r="5" fill="#FFFDFB"/><circle cx="34" cy="33" r="5" fill="#FFFDFB"/><path d="M14 33h13l4-13h-5M28 14h5"/><path d="M18 24h10v6H18z" fill="#F5E5B8"/></svg>` },
       car: { label: '汽車停車', group: '交通出行', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 25l4-9h20l4 9v9H10v-9z" fill="#FFFDFB"/><path d="M14 25h20" fill="#CFD8E6"/><circle cx="16" cy="34" r="3.5" fill="#CFD8E6"/><circle cx="32" cy="34" r="3.5" fill="#CFD8E6"/></svg>` },
-
       bag: { label: '購物袋', group: '購物生活', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18h24l-2 20H14l-2-20z" fill="#F2D5DC"/><path d="M18 18v-3a6 6 0 0 1 12 0v3"/><path d="M21 25c1.5 1.5 4.5 1.5 6 0" stroke-width="1.7"/></svg>` },
       cart: { label: '超市日用', group: '購物生活', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 13h5l4 17h16l3-11H16" fill="#FFFDFB"/><circle cx="20" cy="35" r="2.5" fill="#F5E5B8"/><circle cx="32" cy="35" r="2.5" fill="#F5E5B8"/></svg>` },
       shirt: { label: '服飾穿搭', group: '購物生活', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 12l8 4 8-4 7 6-4 6-3-2v15H16V22l-3 2-4-6 7-6z" fill="#CFD8E6"/></svg>` },
       cosmetic: { label: '美妝保養', group: '購物生活', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="18" y="22" width="12" height="16" rx="3" fill="#FFFDFB"/><path d="M20 22v-8l8-3v11" fill="#F2D5DC"/></svg>` },
-
       game: { label: '遊戲娛樂', group: '娛樂與居家', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="17" width="30" height="17" rx="8.5" fill="#CFD8E6"/><path d="M17 22v6M14 25h6" stroke="#FFFDFB" stroke-width="2.2"/><circle cx="31" cy="23.5" r="1.5" fill="#F2D5DC" stroke="none"/><circle cx="34" cy="26.5" r="1.5" fill="#F5E5B8" stroke="none"/></svg>` },
       movie: { label: '電影追劇', group: '娛樂與居家', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="13" width="28" height="22" rx="4" fill="#FFFDFB"/><path d="M10 19h28M17 13l-3 6M25 13l-3 6M33 13l-3 6" fill="#F5E5B8"/></svg>` },
       home: { label: '房租水電', group: '娛樂與居家', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 23L24 11l15 12" fill="#F2D5DC"/><path d="M13 21v16h22V21" fill="#FFFDFB"/><rect x="20" y="27" width="8" height="10" rx="2" fill="#CFD8E6"/></svg>` },
@@ -631,7 +592,6 @@
       medical: { label: '醫療保健', group: '娛樂與居家', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="15" width="28" height="22" rx="5" fill="#FFFDFB"/><path d="M19 15v-3a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"/><path d="M24 21v10M19 26h10" stroke="#F2D5DC" stroke-width="3"/></svg>` },
       pet: { label: '寵物毛孩', group: '娛樂與居家', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="15" cy="19" r="2.8" fill="#F2D5DC"/><circle cx="21" cy="14" r="2.8" fill="#F2D5DC"/><circle cx="27" cy="14" r="2.8" fill="#F2D5DC"/><circle cx="33" cy="19" r="2.8" fill="#F2D5DC"/><path d="M17 30c0-4 3.5-7 7-7s7 3 7 7c0 3-2.5 5-7 5s-7-2-7-5z" fill="#F5E5B8"/></svg>` },
       book: { label: '學習書籍', group: '娛樂與居家', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 11h21a3 3 0 0 1 3 3v21a3 3 0 0 1-3 3H12V11z" fill="#CFD8E6"/><path d="M12 32h24v5H12z" fill="#FFFDFB"/></svg>` },
-
       salary: { label: '薪水獎金', group: '收入與理財', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 16h14l4 8c2 5-1 13-11 13s-13-8-11-13l4-8z" fill="#F5E5B8"/><path d="M19 16l-2-5h14l-2 5"/><path d="M24 22v8M21 25h6" stroke-width="1.8"/></svg>` },
       coin: { label: '零用金幣', group: '收入與理財', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="14" fill="#F5E5B8"/><circle cx="24" cy="24" r="10" stroke-dasharray="2 2"/><path d="M24 18v12M21 21h6"/></svg>` },
       gift: { label: '紅包禮物', group: '收入與理財', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="11" y="20" width="26" height="18" rx="3" fill="#FFFDFB"/><rect x="9" y="15" width="30" height="6" rx="2" fill="#F2D5DC"/><path d="M24 15v23" stroke="#F2D5DC" stroke-width="3"/><path d="M24 15c-4-5-9-3-7 0h7zm0 0c4-5 9-3 7 0h-7z" fill="#F5E5B8"/></svg>` },
@@ -663,21 +623,13 @@
     ];
 
     const DEFAULT_EXPENSE_CATS = [
-      { name: '早餐', icon: 'toast' },
-      { name: '午餐', icon: 'noodle' },
-      { name: '晚餐', icon: 'rice' },
-      { name: '飲料點心', icon: 'boba' },
-      { name: '交通', icon: 'bus' },
-      { name: '購物', icon: 'bag' },
-      { name: '娛樂', icon: 'game' },
-      { name: '日用品', icon: 'cart' }
+      { name: '早餐', icon: 'toast' }, { name: '午餐', icon: 'noodle' }, { name: '晚餐', icon: 'rice' },
+      { name: '飲料點心', icon: 'boba' }, { name: '交通', icon: 'bus' }, { name: '購物', icon: 'bag' },
+      { name: '娛樂', icon: 'game' }, { name: '日用品', icon: 'cart' }
     ];
 
     const DEFAULT_INCOME_CATS = [
-      { name: '薪水', icon: 'salary' },
-      { name: '零用錢', icon: 'coin' },
-      { name: '獎金', icon: 'gift' },
-      { name: '其他', icon: 'star' }
+      { name: '薪水', icon: 'salary' }, { name: '零用錢', icon: 'coin' }, { name: '獎金', icon: 'gift' }, { name: '其他', icon: 'star' }
     ];
 
     const STORAGE_KEY = 'cute_pastel_ledger_v4';
@@ -687,14 +639,9 @@
       userProfile: { name: '', lastBackupAt: '' },
       ledgers: [{ id: 'ledger_default', name: '帳本1' }],
       activeLedgerId: 'ledger_default',
-      wallets: [
-        { id: 'wallet_cash_default', name: '現金', type: 'cash', group: '現金', balance: 0, icon: 'cash', isDebt: false, includeInTotal: true, note: '預設錢包' }
-      ],
+      wallets: [{ id: 'wallet_cash_default', name: '現金', type: 'cash', group: '現金', balance: 0, icon: 'cash', isDebt: false, includeInTotal: true, note: '預設錢包' }],
       entries: [],
-      categories: {
-        expense: [...DEFAULT_EXPENSE_CATS],
-        income: [...DEFAULT_INCOME_CATS]
-      }
+      categories: { expense: [...DEFAULT_EXPENSE_CATS], income: [...DEFAULT_INCOME_CATS] }
     };
 
     let currentMainTab = 'ledger';
@@ -702,24 +649,17 @@
     let expandedProductEntryIds = new Set();
     let tempModalProducts = [];
     let currentEntryProducts = [];
-
     let chartLedgerId = 'ledger_default';
     let chartType = 'expense';
     let chartGroupBy = 'category';
     let chartMonthFilter = 'ALL';
-
-    const CHART_PALETTE = [
-      '#9FB6D4', '#E4A8B8', '#E6CC8C', '#A6C29D',
-      '#B8A8D6', '#8FC4C2', '#E5B08C', '#B6C5DC',
-      '#D99B9B', '#C2B29B'
-    ];
+    const CHART_PALETTE = ['#9FB6D4', '#E4A8B8', '#E6CC8C', '#A6C29D', '#B8A8D6', '#8FC4C2', '#E5B08C', '#B6C5DC', '#D99B9B', '#C2B29B'];
 
     function init() {
       document.getElementById('headerLogo').innerHTML = CLOUD_LOGO_SVG;
       document.getElementById('navIconLedger').innerHTML = CLOUD_LOGO_SVG;
       document.getElementById('navIconChart').innerHTML = CHART_NAV_SVG;
       document.getElementById('navIconWallet').innerHTML = WALLET_NAV_SVG;
-
       loadData();
       chartLedgerId = appData.activeLedgerId;
       renderAll();
@@ -730,13 +670,9 @@
       if (!saved) {
         for (const k of OLD_KEYS) {
           const old = localStorage.getItem(k);
-          if (old) {
-            saved = old;
-            break;
-          }
+          if (old) { saved = old; break; }
         }
       }
-
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
@@ -744,133 +680,82 @@
             appData.ledgers = parsed.ledgers;
             appData.activeLedgerId = parsed.activeLedgerId || parsed.ledgers[0].id;
           }
-          if (parsed.wallets && parsed.wallets.length > 0) {
-            appData.wallets = parsed.wallets;
-          }
+          if (parsed.wallets && parsed.wallets.length > 0) appData.wallets = parsed.wallets;
           if (parsed.entries) {
             appData.entries = parsed.entries.map(e => ({
-              ...e,
-              walletId: e.walletId || appData.wallets[0].id,
-              products: Array.isArray(e.products) ? e.products : []
+              ...e, walletId: e.walletId || appData.wallets[0].id, products: Array.isArray(e.products) ? e.products : []
             }));
           }
-          if (parsed.categories) {
-            appData.categories = parsed.categories;
-          }
-          if (parsed.userProfile) {
-            appData.userProfile = parsed.userProfile;
-          }
-        } catch (e) {
-          console.error('讀取儲存資料失敗', e);
-        }
+          if (parsed.categories) appData.categories = parsed.categories;
+          if (parsed.userProfile) appData.userProfile = parsed.userProfile;
+        } catch (e) { console.error(e); }
       }
       saveData();
     }
 
-    function saveData() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
-    }
+    function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(appData)); }
 
     function renderAll() {
       updateUserHeader();
       renderLedgerTabs();
       renderLedgerEntries();
       renderWallets();
-      if (currentMainTab === 'chart') {
-        renderChartView();
-      }
+      if (currentMainTab === 'chart') renderChartView();
     }
 
     function updateUserHeader() {
       const sub = document.getElementById('headerSubtitle');
-      if (appData.userProfile && appData.userProfile.name) {
-        sub.textContent = `${appData.userProfile.name} 的專屬記帳本`;
-      } else {
-        sub.textContent = '日常收支與帳戶管理';
-      }
+      sub.textContent = (appData.userProfile && appData.userProfile.name) ? `${appData.userProfile.name} 的專屬記帳本` : '日常收支與帳戶管理';
     }
 
     function switchMainTab(tab) {
       currentMainTab = tab;
-      const viewLedger = document.getElementById('viewLedger');
-      const viewChart = document.getElementById('viewChart');
-      const viewWallet = document.getElementById('viewWallet');
-      const floatingBtn = document.getElementById('floatingAddBtn');
-
-      const navLedger = document.getElementById('navTabLedger');
-      const navChart = document.getElementById('navTabChart');
-      const navWallet = document.getElementById('navTabWallet');
-
-      viewLedger.classList.add('hidden');
-      viewChart.classList.add('hidden');
-      viewWallet.classList.add('hidden');
-
-      navLedger.classList.replace('text-[#7A655E]', 'text-[#B09C94]');
-      navChart.classList.replace('text-[#7A655E]', 'text-[#B09C94]');
-      navWallet.classList.replace('text-[#7A655E]', 'text-[#B09C94]');
+      document.getElementById('viewLedger').classList.add('hidden');
+      document.getElementById('viewChart').classList.add('hidden');
+      document.getElementById('viewWallet').classList.add('hidden');
+      document.getElementById('navTabLedger').classList.replace('text-[#7A655E]', 'text-[#B09C94]');
+      document.getElementById('navTabChart').classList.replace('text-[#7A655E]', 'text-[#B09C94]');
+      document.getElementById('navTabWallet').classList.replace('text-[#7A655E]', 'text-[#B09C94]');
 
       if (tab === 'ledger') {
-        viewLedger.classList.remove('hidden');
-        floatingBtn.classList.remove('hidden');
-        navLedger.classList.replace('text-[#B09C94]', 'text-[#7A655E]');
-        renderLedgerTabs();
-        renderLedgerEntries();
+        document.getElementById('viewLedger').classList.remove('hidden');
+        document.getElementById('floatingAddBtn').classList.remove('hidden');
+        document.getElementById('navTabLedger').classList.replace('text-[#B09C94]', 'text-[#7A655E]');
+        renderLedgerTabs(); renderLedgerEntries();
       } else if (tab === 'chart') {
-        viewChart.classList.remove('hidden');
-        floatingBtn.classList.add('hidden');
-        navChart.classList.replace('text-[#B09C94]', 'text-[#7A655E]');
-        if (!appData.ledgers.some(l => l.id === chartLedgerId)) {
-          chartLedgerId = appData.activeLedgerId;
-        }
+        document.getElementById('viewChart').classList.remove('hidden');
+        document.getElementById('floatingAddBtn').classList.add('hidden');
+        document.getElementById('navTabChart').classList.replace('text-[#B09C94]', 'text-[#7A655E]');
+        if (!appData.ledgers.some(l => l.id === chartLedgerId)) chartLedgerId = appData.activeLedgerId;
         renderChartView();
       } else {
-        viewWallet.classList.remove('hidden');
-        floatingBtn.classList.add('hidden');
-        navWallet.classList.replace('text-[#B09C94]', 'text-[#7A655E]');
+        document.getElementById('viewWallet').classList.remove('hidden');
+        document.getElementById('floatingAddBtn').classList.add('hidden');
+        document.getElementById('navTabWallet').classList.replace('text-[#B09C94]', 'text-[#7A655E]');
         renderWallets();
       }
     }
 
-    // ==================== 帳本與收支邏輯 ====================
     function renderLedgerTabs() {
-      const container = document.getElementById('ledgerTabs');
-      container.innerHTML = appData.ledgers.map(ledger => {
+      document.getElementById('ledgerTabs').innerHTML = appData.ledgers.map(ledger => {
         const isActive = ledger.id === appData.activeLedgerId;
-        return `
-          <button onclick="switchLedger('${ledger.id}')"
-            class="shrink-0 px-3.5 py-1.5 rounded-full text-xs font-bold transition active:scale-95 ${
-              isActive
-                ? 'bg-[#7A655E] text-[#FFFDFB] shadow-2xs'
-                : 'bg-[#FFFDFB]/85 text-[#8C766E] border border-[#E2D5CE] hover:bg-white'
-            }">
-            ${escapeHtml(ledger.name)}
-          </button>`;
+        return `<button onclick="switchLedger('${ledger.id}')" class="shrink-0 px-3.5 py-1.5 rounded-full text-xs font-bold transition active:scale-95 ${isActive ? 'bg-[#7A655E] text-[#FFFDFB] shadow-2xs' : 'bg-[#FFFDFB]/85 text-[#8C766E] border border-[#E2D5CE] hover:bg-white'}">${escapeHtml(ledger.name)}</button>`;
       }).join('');
-
       const activeLedger = appData.ledgers.find(l => l.id === appData.activeLedgerId) || appData.ledgers[0];
       document.getElementById('currentLedgerTitle').textContent = activeLedger.name;
       document.getElementById('deleteLedgerBtn').style.display = appData.ledgers.length > 1 ? 'inline-block' : 'none';
     }
 
     function switchLedger(id) {
-      appData.activeLedgerId = id;
-      chartLedgerId = id;
-      saveData();
-      renderLedgerTabs();
-      renderLedgerEntries();
+      appData.activeLedgerId = id; chartLedgerId = id; saveData(); renderLedgerTabs(); renderLedgerEntries();
     }
 
     function createLedger() {
-      const nextNum = appData.ledgers.length + 1;
-      const name = prompt('請輸入新帳本名稱（例如：旅行、生活費、副業）：', `帳本${nextNum}`);
+      const name = prompt('請輸入新帳本名稱（例如：旅行、生活費、副業）：', `帳本${appData.ledgers.length + 1}`);
       if (!name || !name.trim()) return;
       const newLedger = { id: 'ledger_' + Date.now(), name: name.trim() };
-      appData.ledgers.push(newLedger);
-      appData.activeLedgerId = newLedger.id;
-      chartLedgerId = newLedger.id;
-      saveData();
-      renderLedgerTabs();
-      renderLedgerEntries();
+      appData.ledgers.push(newLedger); appData.activeLedgerId = newLedger.id; chartLedgerId = newLedger.id;
+      saveData(); renderLedgerTabs(); renderLedgerEntries();
     }
 
     function renameCurrentLedger() {
@@ -878,48 +763,31 @@
       if (!current) return;
       const newName = prompt('請輸入新的帳本名稱：', current.name);
       if (!newName || !newName.trim()) return;
-      current.name = newName.trim();
-      saveData();
-      renderLedgerTabs();
+      current.name = newName.trim(); saveData(); renderLedgerTabs();
     }
 
     function openDeleteLedgerModal() {
       if (appData.ledgers.length <= 1) return;
       const current = appData.ledgers.find(l => l.id === appData.activeLedgerId);
       const count = appData.entries.filter(e => e.ledgerId === current.id).length;
-      document.getElementById('deleteLedgerDesc').innerHTML =
-        `確定要刪除「<b>${escapeHtml(current.name)}</b>」（共 ${count} 筆紀錄）嗎？<br>請選擇要如何處理這個帳本花掉／存入的錢包餘額：`;
-
-      const modal = document.getElementById('deleteLedgerModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
+      document.getElementById('deleteLedgerDesc').innerHTML = `確定要刪除「<b>${escapeHtml(current.name)}</b>」（共 ${count} 筆紀錄）嗎？<br>請選擇要如何處理這個帳本花掉／存入的錢包餘額：`;
+      const modal = document.getElementById('deleteLedgerModal'); modal.classList.remove('hidden'); modal.classList.add('flex');
     }
 
     function closeDeleteLedgerModal() {
-      const modal = document.getElementById('deleteLedgerModal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
+      const modal = document.getElementById('deleteLedgerModal'); modal.classList.add('hidden'); modal.classList.remove('flex');
     }
 
     function confirmDeleteLedger(refundToWallets) {
       if (appData.ledgers.length <= 1) return;
       const targetId = appData.activeLedgerId;
-
       if (refundToWallets) {
-        const ledgerEntries = appData.entries.filter(e => e.ledgerId === targetId);
-        ledgerEntries.forEach(entry => {
-          applyWalletDelta(entry.walletId, entry.type, entry.amount, true);
-        });
+        appData.entries.filter(e => e.ledgerId === targetId).forEach(entry => applyWalletDelta(entry.walletId, entry.type, entry.amount, true));
       }
-
       appData.entries = appData.entries.filter(e => e.ledgerId !== targetId);
       appData.ledgers = appData.ledgers.filter(l => l.id !== targetId);
-      appData.activeLedgerId = appData.ledgers[0].id;
-      chartLedgerId = appData.activeLedgerId;
-
-      saveData();
-      closeDeleteLedgerModal();
-      renderAll();
+      appData.activeLedgerId = appData.ledgers[0].id; chartLedgerId = appData.activeLedgerId;
+      saveData(); closeDeleteLedgerModal(); renderAll();
     }
 
     function applyWalletDelta(walletId, entryType, amount, isRevert = false) {
@@ -927,27 +795,13 @@
       if (!wallet) return;
       const val = Number(amount) || 0;
       const sign = isRevert ? -1 : 1;
-
-      if (wallet.isDebt) {
-        if (entryType === 'expense') {
-          wallet.balance += val * sign;
-        } else {
-          wallet.balance -= val * sign;
-        }
-      } else {
-        if (entryType === 'expense') {
-          wallet.balance -= val * sign;
-        } else {
-          wallet.balance += val * sign;
-        }
-      }
+      if (wallet.isDebt) wallet.balance += (entryType === 'expense' ? val : -val) * sign;
+      else wallet.balance += (entryType === 'expense' ? -val : val) * sign;
     }
 
     function getCategoryIconSvg(type, catName) {
-      const list = appData.categories[type] || [];
-      const found = list.find(c => c.name === catName);
-      const iconKey = found ? found.icon : 'star';
-      return (ICONS_DB[iconKey] || ICONS_DB.star).svg;
+      const found = (appData.categories[type] || []).find(c => c.name === catName);
+      return (ICONS_DB[found ? found.icon : 'star'] || ICONS_DB.star).svg;
     }
 
     function getWalletNameById(id) {
@@ -956,24 +810,15 @@
     }
 
     function toggleProductDropdown(entryId) {
-      if (expandedProductEntryIds.has(entryId)) {
-        expandedProductEntryIds.delete(entryId);
-      } else {
-        expandedProductEntryIds.add(entryId);
-      }
+      if (expandedProductEntryIds.has(entryId)) expandedProductEntryIds.delete(entryId);
+      else expandedProductEntryIds.add(entryId);
       renderLedgerEntries();
     }
 
     function renderLedgerEntries() {
       const currentEntries = appData.entries.filter(e => e.ledgerId === appData.activeLedgerId);
-
-      let incomeSum = 0;
-      let expenseSum = 0;
-      currentEntries.forEach(e => {
-        if (e.type === 'income') incomeSum += Number(e.amount);
-        else expenseSum += Number(e.amount);
-      });
-
+      let incomeSum = 0, expenseSum = 0;
+      currentEntries.forEach(e => { if (e.type === 'income') incomeSum += Number(e.amount); else expenseSum += Number(e.amount); });
       const net = incomeSum - expenseSum;
       document.getElementById('netBalance').textContent = (net < 0 ? '-NT$' : 'NT$') + Math.abs(net).toLocaleString();
       document.getElementById('totalIncome').textContent = '+NT$' + incomeSum.toLocaleString();
@@ -981,30 +826,18 @@
 
       const container = document.getElementById('dailyCardsContainer');
       if (currentEntries.length === 0) {
-        container.innerHTML = `
-          <div class="kawaii-card rounded-3xl p-8 text-center">
-            <div class="w-12 h-12 mx-auto mb-2 p-2 rounded-2xl bg-[#FAF5F0] border border-[#E2D5CE]">${CLOUD_LOGO_SVG}</div>
-            <p class="text-sm font-bold text-[#8C766E]">「${escapeHtml(document.getElementById('currentLedgerTitle').textContent)}」目前沒有紀錄喔</p>
-            <p class="text-xs text-[#B09C94] mt-1">點擊下方「＋ 記一筆帳」開始記錄日常收支吧！</p>
-          </div>`;
+        container.innerHTML = `<div class="kawaii-card rounded-3xl p-8 text-center"><div class="w-12 h-12 mx-auto mb-2 p-2 rounded-2xl bg-[#FAF5F0] border border-[#E2D5CE]">${CLOUD_LOGO_SVG}</div><p class="text-sm font-bold text-[#8C766E]">「${escapeHtml(document.getElementById('currentLedgerTitle').textContent)}」目前沒有紀錄喔</p><p class="text-xs text-[#B09C94] mt-1">點擊下方「＋ 記一筆帳」開始記錄日常收支吧！</p></div>`;
         return;
       }
 
       const grouped = {};
-      currentEntries.forEach(item => {
-        if (!grouped[item.date]) grouped[item.date] = [];
-        grouped[item.date].push(item);
-      });
-
+      currentEntries.forEach(item => { if (!grouped[item.date]) grouped[item.date] = []; grouped[item.date].push(item); });
       const sortedDates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
 
       container.innerHTML = sortedDates.map(dateStr => {
         const items = grouped[dateStr].slice().reverse();
         let dayInc = 0, dayExp = 0;
-        items.forEach(i => {
-          if (i.type === 'income') dayInc += Number(i.amount);
-          else dayExp += Number(i.amount);
-        });
+        items.forEach(i => { if (i.type === 'income') dayInc += Number(i.amount); else dayExp += Number(i.amount); });
 
         const rowsHtml = items.map(item => {
           const isExp = item.type === 'expense';
@@ -1016,45 +849,21 @@
 
           let mainTitle = item.category;
           let subLineParts = [];
+          if (isExp && item.store) { mainTitle = item.store; subLineParts.push(item.category); if (item.note) subLineParts.push(item.note); }
+          else if (item.note) subLineParts.push(item.note);
 
-          if (isExp && item.store) {
-            mainTitle = item.store;
-            subLineParts.push(item.category);
-            if (item.note) subLineParts.push(item.note);
-          } else {
-            if (item.note) subLineParts.push(item.note);
-          }
-
-          const productBadgeHtml = hasProducts ? `
-            <button type="button" onclick="toggleProductDropdown('${item.id}')"
-              class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F5E5B8]/65 hover:bg-[#F5E5B8] border border-[#E5CF93] text-[#7A655E] transition">
-              <span>${products.length}項商品</span>
-              <span class="text-[8px]">${isExpanded ? '▲' : '▼'}</span>
-            </button>` : '';
-
-          const expandedProductsBox = (hasProducts && isExpanded) ? `
-            <div class="mt-2 ml-13 bg-[#FAF5F0] border border-[#E2D5CE] rounded-2xl px-3 py-2 space-y-1">
-              ${products.map((prod, idx) => `
-                <div class="flex items-center gap-2 text-xs text-[#7A655E]">
-                  <span class="text-[10px] font-bold text-[#A8948C]">商品${idx + 1}</span>
-                  <span class="font-medium">${escapeHtml(prod)}</span>
-                </div>
-              `).join('')}
-            </div>` : '';
+          const productBadgeHtml = hasProducts ? `<button type="button" onclick="toggleProductDropdown('${item.id}')" class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F5E5B8]/65 hover:bg-[#F5E5B8] border border-[#E5CF93] text-[#7A655E] transition"><span>${products.length}項商品</span><span class="text-[8px]">${isExpanded ? '▲' : '▼'}</span></button>` : '';
+          const expandedProductsBox = (hasProducts && isExpanded) ? `<div class="mt-2 ml-13 bg-[#FAF5F0] border border-[#E2D5CE] rounded-2xl px-3 py-2 space-y-1">${products.map((prod, idx) => `<div class="flex items-center gap-2 text-xs text-[#7A655E]"><span class="text-[10px] font-bold text-[#A8948C]">商品${idx + 1}</span><span class="font-medium">${escapeHtml(prod)}</span></div>`).join('')}</div>` : '';
 
           return `
             <div class="py-3 first:pt-2.5 last:pb-2.5">
               <div class="flex items-center justify-between gap-2.5">
                 <div class="flex items-center gap-3 min-w-0 flex-1">
-                  <div class="w-10 h-10 rounded-2xl shrink-0 p-1.5 border ${isExp ? 'bg-[#FFFDFB] border-[#E2D5CE]' : 'bg-[#F5E5B8]/35 border-[#E6D49E]'}">
-                    ${iconSvg}
-                  </div>
+                  <div class="w-10 h-10 rounded-2xl shrink-0 p-1.5 border ${isExp ? 'bg-[#FFFDFB] border-[#E2D5CE]' : 'bg-[#F5E5B8]/35 border-[#E6D49E]'}">${iconSvg}</div>
                   <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-1.5 flex-wrap">
                       <span class="font-bold text-sm text-[#7A655E] truncate">${escapeHtml(mainTitle)}</span>
-                      <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EBF0F7] text-[#6E8099] shrink-0">
-                        ${escapeHtml(walletName)}
-                      </span>
+                      <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EBF0F7] text-[#6E8099] shrink-0">${escapeHtml(walletName)}</span>
                     </div>
                     <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
                       ${subLineParts.length > 0 ? `<span class="text-xs text-[#A8948C] truncate">${escapeHtml(subLineParts.join(' · '))}</span>` : ''}
@@ -1062,11 +871,8 @@
                     </div>
                   </div>
                 </div>
-
                 <div class="flex items-center gap-2.5 shrink-0">
-                  <span class="font-bold text-sm ${isExp ? 'text-[#C97B8E]' : 'text-[#7D9468]'}">
-                    ${isExp ? '-' : '+'}NT$${Number(item.amount).toLocaleString()}
-                  </span>
+                  <span class="font-bold text-sm ${isExp ? 'text-[#C97B8E]' : 'text-[#7D9468]'}">${isExp ? '-' : '+'}NT$${Number(item.amount).toLocaleString()}</span>
                   <button onclick="openEditModal('${item.id}')" class="px-2.5 py-1 rounded-xl bg-[#FAF5F0] hover:bg-[#EBF0F7] border border-[#E2D5CE] text-[11px] font-bold text-[#7E8FA6] active:scale-95">編輯</button>
                 </div>
               </div>
@@ -1077,66 +883,36 @@
         return `
           <section class="kawaii-card rounded-3xl p-4">
             <div class="flex items-center justify-between pb-2.5 mb-1 border-b border-dashed border-[#E2D5CE]">
-              <div class="flex items-center gap-1.5 font-bold text-sm text-[#7A655E]">
-                <span class="text-[#9FB6D4] text-xs">▼</span>
-                <span>${formatDateDisplay(dateStr)}</span>
-              </div>
-              <div class="flex gap-2 text-xs font-bold">
-                ${dayInc > 0 ? `<span class="text-[#7D9468]">收入:NT$${dayInc.toLocaleString()}</span>` : ''}
-                ${dayExp > 0 ? `<span class="text-[#C97B8E]">支出:NT$${dayExp.toLocaleString()}</span>` : ''}
-              </div>
+              <div class="flex items-center gap-1.5 font-bold text-sm text-[#7A655E]"><span class="text-[#9FB6D4] text-xs">▼</span><span>${formatDateDisplay(dateStr)}</span></div>
+              <div class="flex gap-2 text-xs font-bold">${dayInc > 0 ? `<span class="text-[#7D9468]">收入:NT$${dayInc.toLocaleString()}</span>` : ''}${dayExp > 0 ? `<span class="text-[#C97B8E]">支出:NT$${dayExp.toLocaleString()}</span>` : ''}</div>
             </div>
             <div class="divide-y divide-[#F2EAE4]">${rowsHtml}</div>
           </section>`;
       }).join('');
     }
 
-    // ==================== 商品明細視窗與店家自動推薦 ====================
     function openProductsModal() {
       tempModalProducts = currentEntryProducts.length > 0 ? [...currentEntryProducts] : [''];
       renderProductInputs();
-      const modal = document.getElementById('productsModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
+      const modal = document.getElementById('productsModal'); modal.classList.remove('hidden'); modal.classList.add('flex');
     }
 
     function closeProductsModal() {
-      const modal = document.getElementById('productsModal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
+      const modal = document.getElementById('productsModal'); modal.classList.add('hidden'); modal.classList.remove('flex');
     }
 
     function renderProductInputs() {
-      const list = document.getElementById('productInputsList');
-      list.innerHTML = tempModalProducts.map((val, idx) => `
+      document.getElementById('productInputsList').innerHTML = tempModalProducts.map((val, idx) => `
         <div class="flex items-center gap-1.5">
           <span class="text-[11px] font-bold text-[#9A857D] w-11 shrink-0">商品 ${idx + 1}</span>
-          <input
-            type="text"
-            value="${escapeHtml(val)}"
-            oninput="updateTempProductValue(${idx}, this.value)"
-            class="kawaii-input flex-1 text-xs font-medium px-3 py-2 rounded-xl"
-          />
-          ${tempModalProducts.length > 1 ? `
-            <button type="button" onclick="removeProductInputRow(${idx})" class="w-6 h-6 rounded-full bg-[#F9EAEF] text-[#C97B8E] text-xs font-bold shrink-0">✕</button>
-          ` : ''}
-        </div>
-      `).join('');
+          <input type="text" value="${escapeHtml(val)}" oninput="updateTempProductValue(${idx}, this.value)" class="kawaii-input flex-1 text-xs font-medium px-3 py-2 rounded-xl" />
+          ${tempModalProducts.length > 1 ? `<button type="button" onclick="removeProductInputRow(${idx})" class="w-6 h-6 rounded-full bg-[#F9EAEF] text-[#C97B8E] text-xs font-bold shrink-0">✕</button>` : ''}
+        </div>`).join('');
     }
 
-    function updateTempProductValue(idx, val) {
-      tempModalProducts[idx] = val;
-    }
-
-    function addProductInputRow() {
-      tempModalProducts.push('');
-      renderProductInputs();
-    }
-
-    function removeProductInputRow(idx) {
-      tempModalProducts.splice(idx, 1);
-      renderProductInputs();
-    }
+    function updateTempProductValue(idx, val) { tempModalProducts[idx] = val; }
+    function addProductInputRow() { tempModalProducts.push(''); renderProductInputs(); }
+    function removeProductInputRow(idx) { tempModalProducts.splice(idx, 1); renderProductInputs(); }
 
     function saveProductsFromModal() {
       currentEntryProducts = tempModalProducts.map(s => s.trim()).filter(s => s !== '');
@@ -1163,68 +939,35 @@
         const e = appData.entries[i];
         if (e.type === 'expense' && e.store && e.store.trim() !== '') {
           const key = e.store.trim();
-          if (!map.has(key)) {
-            map.set(key, {
-              store: key,
-              category: e.category,
-              walletId: e.walletId
-            });
-          }
+          if (!map.has(key)) map.set(key, { store: key, category: e.category, walletId: e.walletId });
         }
       }
       return Array.from(map.values());
     }
 
     function handleStoreInput() {
-      const input = document.getElementById('entryStore');
+      const keyword = document.getElementById('entryStore').value.trim().toLowerCase();
       const box = document.getElementById('storeSuggestionsBox');
-      const keyword = input.value.trim().toLowerCase();
       const stores = getUniqueHistoricalStores();
-
-      const matched = keyword === ''
-        ? stores.slice(0, 6)
-        : stores.filter(s => s.store.toLowerCase().includes(keyword)).slice(0, 6);
-
-      if (matched.length === 0) {
-        box.classList.add('hidden');
-        return;
-      }
-
-      box.innerHTML = matched.map(item => `
-        <button type="button"
-          onmousedown="selectStoreSuggestion('${escapeHtml(item.store).replace(/'/g, "\\'")}', '${escapeHtml(item.category).replace(/'/g, "\\'")}', '${item.walletId}')"
-          class="w-full px-3 py-2 text-left hover:bg-[#EBF0F7]/70 flex items-center justify-between text-xs">
-          <span class="font-bold text-[#7A655E]">${escapeHtml(item.store)}</span>
-          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FAF5F0] border border-[#E2D5CE] text-[#8C766E]">
-            ${escapeHtml(item.category)}
-          </span>
-        </button>
-      `).join('');
-
+      const matched = keyword === '' ? stores.slice(0, 6) : stores.filter(s => s.store.toLowerCase().includes(keyword)).slice(0, 6);
+      if (matched.length === 0) { box.classList.add('hidden'); return; }
+      box.innerHTML = matched.map(item => `<button type="button" onmousedown="selectStoreSuggestion('${escapeHtml(item.store).replace(/'/g, "\\'")}', '${escapeHtml(item.category).replace(/'/g, "\\'")}', '${item.walletId}')" class="w-full px-3 py-2 text-left hover:bg-[#EBF0F7]/70 flex items-center justify-between text-xs"><span class="font-bold text-[#7A655E]">${escapeHtml(item.store)}</span><span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FAF5F0] border border-[#E2D5CE] text-[#8C766E]">${escapeHtml(item.category)}</span></button>`).join('');
       box.classList.remove('hidden');
     }
 
     function selectStoreSuggestion(storeName, categoryName, walletId) {
       document.getElementById('entryStore').value = storeName;
       document.getElementById('storeSuggestionsBox').classList.add('hidden');
-
       if (categoryName && appData.categories.expense.some(c => c.name === categoryName)) {
-        document.getElementById('entryCategory').value = categoryName;
-        renderCategoryChips('expense');
+        document.getElementById('entryCategory').value = categoryName; renderCategoryChips('expense');
       }
       if (walletId && appData.wallets.some(w => w.id === walletId)) {
-        document.getElementById('entryWalletId').value = walletId;
-        renderEntryWalletChips();
+        document.getElementById('entryWalletId').value = walletId; renderEntryWalletChips();
       }
     }
 
-    function hideStoreSuggestionsDelayed() {
-      setTimeout(() => {
-        document.getElementById('storeSuggestionsBox').classList.add('hidden');
-      }, 150);
-    }
+    function hideStoreSuggestionsDelayed() { setTimeout(() => document.getElementById('storeSuggestionsBox').classList.add('hidden'), 150); }
 
-    // ==================== 新增 / 編輯收支彈窗 ====================
     function openEntryModal() {
       document.getElementById('modalTitle').textContent = '新增一筆帳';
       document.getElementById('editId').value = '';
@@ -1234,26 +977,17 @@
       document.getElementById('entryNote').value = '';
       document.getElementById('storeSuggestionsBox').classList.add('hidden');
       document.getElementById('btnDeleteEntryInModal').classList.add('hidden');
-
-      currentEntryProducts = [];
-      updateProductsButtonLabel();
-
+      currentEntryProducts = []; updateProductsButtonLabel();
       if (!document.getElementById('entryWalletId').value || !appData.wallets.some(w => w.id === document.getElementById('entryWalletId').value)) {
         document.getElementById('entryWalletId').value = appData.wallets[0].id;
       }
-
-      setEntryType('expense');
-      renderEntryWalletChips();
-
-      const modal = document.getElementById('entryModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
+      setEntryType('expense'); renderEntryWalletChips();
+      const modal = document.getElementById('entryModal'); modal.classList.remove('hidden'); modal.classList.add('flex');
     }
 
     function openEditModal(id) {
       const item = appData.entries.find(e => e.id === id);
       if (!item) return;
-
       document.getElementById('modalTitle').textContent = '編輯紀錄';
       document.getElementById('editId').value = item.id;
       document.getElementById('entryDate').value = item.date;
@@ -1263,22 +997,14 @@
       document.getElementById('entryWalletId').value = item.walletId || appData.wallets[0].id;
       document.getElementById('storeSuggestionsBox').classList.add('hidden');
       document.getElementById('btnDeleteEntryInModal').classList.remove('hidden');
-
       currentEntryProducts = Array.isArray(item.products) ? [...item.products] : [];
       updateProductsButtonLabel();
-
-      setEntryType(item.type, item.category);
-      renderEntryWalletChips();
-
-      const modal = document.getElementById('entryModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
+      setEntryType(item.type, item.category); renderEntryWalletChips();
+      const modal = document.getElementById('entryModal'); modal.classList.remove('hidden'); modal.classList.add('flex');
     }
 
     function closeEntryModal() {
-      const modal = document.getElementById('entryModal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
+      const modal = document.getElementById('entryModal'); modal.classList.add('hidden'); modal.classList.remove('flex');
     }
 
     function deleteEntryFromModal() {
@@ -1290,27 +1016,14 @@
 
     function renderEntryWalletChips() {
       const selectedId = document.getElementById('entryWalletId').value;
-      const container = document.getElementById('entryWalletChips');
-      container.innerHTML = appData.wallets.map(w => {
+      document.getElementById('entryWalletChips').innerHTML = appData.wallets.map(w => {
         const isSel = w.id === selectedId;
         const iconSvg = (WALLET_ICONS[w.icon] || WALLET_ICONS.cash).svg;
-        return `
-          <button type="button" onclick="selectEntryWallet('${w.id}')"
-            class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-2xl text-xs font-bold border transition ${
-              isSel
-                ? 'bg-[#CFD8E6] border-[#96ABC9] text-[#53647D]'
-                : 'bg-[#FAF5F0] border-[#E2D5CE] text-[#8C766E] hover:bg-white'
-            }">
-            <span class="w-4 h-4 inline-block">${iconSvg}</span>
-            <span>${escapeHtml(w.name)}</span>
-          </button>`;
+        return `<button type="button" onclick="selectEntryWallet('${w.id}')" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-2xl text-xs font-bold border transition ${isSel ? 'bg-[#CFD8E6] border-[#96ABC9] text-[#53647D]' : 'bg-[#FAF5F0] border-[#E2D5CE] text-[#8C766E] hover:bg-white'}"><span class="w-4 h-4 inline-block">${iconSvg}</span><span>${escapeHtml(w.name)}</span></button>`;
       }).join('');
     }
 
-    function selectEntryWallet(id) {
-      document.getElementById('entryWalletId').value = id;
-      renderEntryWalletChips();
-    }
+    function selectEntryWallet(id) { document.getElementById('entryWalletId').value = id; renderEntryWalletChips(); }
 
     function setEntryType(type, preselectCategory = null) {
       document.getElementById('entryType').value = type;
@@ -1318,50 +1031,31 @@
       const btnInc = document.getElementById('btnTypeIncome');
       const walletLabel = document.getElementById('labelWalletSelect');
       const storeGroup = document.getElementById('expenseStoreGroup');
-
       if (type === 'expense') {
         btnExp.className = 'py-2 rounded-xl font-bold text-sm bg-[#F2D5DC] text-[#7A5660] shadow-2xs';
         btnInc.className = 'py-2 rounded-xl font-bold text-sm text-[#A8948C]';
-        walletLabel.textContent = '選擇付款錢包（自動扣款）';
-        storeGroup.classList.remove('hidden');
+        walletLabel.textContent = '選擇付款錢包（自動扣款）'; storeGroup.classList.remove('hidden');
       } else {
         btnInc.className = 'py-2 rounded-xl font-bold text-sm bg-[#F5E5B8] text-[#7A655E] shadow-2xs';
         btnExp.className = 'py-2 rounded-xl font-bold text-sm text-[#A8948C]';
-        walletLabel.textContent = '選擇入帳錢包（自動存入）';
-        storeGroup.classList.add('hidden');
+        walletLabel.textContent = '選擇入帳錢包（自動存入）'; storeGroup.classList.add('hidden');
       }
-
       const list = appData.categories[type] || [];
-      const selected = preselectCategory || (list[0] ? list[0].name : '');
-      document.getElementById('entryCategory').value = selected;
+      document.getElementById('entryCategory').value = preselectCategory || (list[0] ? list[0].name : '');
       renderCategoryChips(type);
     }
 
     function renderCategoryChips(type) {
       const list = appData.categories[type] || [];
       const currentSelected = document.getElementById('entryCategory').value;
-      const container = document.getElementById('categoryChips');
-
-      container.innerHTML = list.map(cat => {
+      document.getElementById('categoryChips').innerHTML = list.map(cat => {
         const isSel = cat.name === currentSelected;
         const iconSvg = (ICONS_DB[cat.icon] || ICONS_DB.star).svg;
-        return `
-          <button type="button" onclick="selectCategoryChip('${escapeHtml(cat.name)}')"
-            class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-2xl text-xs font-bold border transition ${
-              isSel
-                ? (type === 'expense' ? 'bg-[#F9EAEF] border-[#E0B8C3] text-[#7A5660]' : 'bg-[#F5E5B8]/70 border-[#DFC786] text-[#7A655E]')
-                : 'bg-[#FAF5F0] border-[#E2D5CE] text-[#8C766E] hover:bg-white'
-            }">
-            <span class="w-4 h-4 inline-block">${iconSvg}</span>
-            <span>${escapeHtml(cat.name)}</span>
-          </button>`;
+        return `<button type="button" onclick="selectCategoryChip('${escapeHtml(cat.name)}')" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-2xl text-xs font-bold border transition ${isSel ? (type === 'expense' ? 'bg-[#F9EAEF] border-[#E0B8C3] text-[#7A5660]' : 'bg-[#F5E5B8]/70 border-[#DFC786] text-[#7A655E]') : 'bg-[#FAF5F0] border-[#E2D5CE] text-[#8C766E] hover:bg-white'}"><span class="w-4 h-4 inline-block">${iconSvg}</span><span>${escapeHtml(cat.name)}</span></button>`;
       }).join('');
     }
 
-    function selectCategoryChip(name) {
-      document.getElementById('entryCategory').value = name;
-      renderCategoryChips(document.getElementById('entryType').value);
-    }
+    function selectCategoryChip(name) { document.getElementById('entryCategory').value = name; renderCategoryChips(document.getElementById('entryType').value); }
 
     function handleEntrySubmit(e) {
       e.preventDefault();
@@ -1374,7 +1068,6 @@
       const products = type === 'expense' ? currentEntryProducts.filter(s => s && s.trim() !== '') : [];
       const amount = Number(document.getElementById('entryAmount').value);
       const note = document.getElementById('entryNote').value.trim();
-
       if (!category || amount <= 0) return;
 
       if (editId) {
@@ -1382,119 +1075,52 @@
         if (idx !== -1) {
           const oldEntry = appData.entries[idx];
           applyWalletDelta(oldEntry.walletId, oldEntry.type, oldEntry.amount, true);
-          appData.entries[idx] = {
-            ...oldEntry,
-            type,
-            walletId,
-            category,
-            date,
-            store,
-            products,
-            amount,
-            note
-          };
+          appData.entries[idx] = { ...oldEntry, type, walletId, category, date, store, products, amount, note };
           applyWalletDelta(walletId, type, amount, false);
         }
       } else {
-        appData.entries.push({
-          id: 'entry_' + Date.now(),
-          ledgerId: appData.activeLedgerId,
-          type,
-          walletId,
-          category,
-          date,
-          store,
-          products,
-          amount,
-          note
-        });
+        appData.entries.push({ id: 'entry_' + Date.now(), ledgerId: appData.activeLedgerId, type, walletId, category, date, store, products, amount, note });
         applyWalletDelta(walletId, type, amount, false);
       }
-
-      saveData();
-      closeEntryModal();
-      renderAll();
+      saveData(); closeEntryModal(); renderAll();
     }
 
     function deleteEntry(id) {
       const target = appData.entries.find(e => e.id === id);
-      if (!target) return;
-      if (!confirm('確定要刪除這筆紀錄嗎？（錢包餘額會同步自動退回）')) return;
-
+      if (!target || !confirm('確定要刪除這筆紀錄嗎？（錢包餘額會同步自動退回）')) return;
       applyWalletDelta(target.walletId, target.type, target.amount, true);
       appData.entries = appData.entries.filter(e => e.id !== id);
-      saveData();
-      renderAll();
+      saveData(); renderAll();
     }
 
-    // ==================== 圖表分析邏輯 ====================
     function renderChartView() {
-      const tabsContainer = document.getElementById('chartLedgerTabs');
-      tabsContainer.innerHTML = appData.ledgers.map(ledger => {
+      document.getElementById('chartLedgerTabs').innerHTML = appData.ledgers.map(ledger => {
         const isActive = ledger.id === chartLedgerId;
-        return `
-          <button onclick="selectChartLedger('${ledger.id}')"
-            class="shrink-0 px-3 py-1 rounded-full text-xs font-bold transition ${
-              isActive
-                ? 'bg-[#687A92] text-[#FFFDFB]'
-                : 'bg-[#FFFDFB]/85 text-[#8C766E] border border-[#E2D5CE]'
-            }">
-            ${escapeHtml(ledger.name)}
-          </button>`;
+        return `<button onclick="selectChartLedger('${ledger.id}')" class="shrink-0 px-3 py-1 rounded-full text-xs font-bold transition ${isActive ? 'bg-[#687A92] text-[#FFFDFB]' : 'bg-[#FFFDFB]/85 text-[#8C766E] border border-[#E2D5CE]'}">${escapeHtml(ledger.name)}</button>`;
       }).join('');
-
       const targetLedger = appData.ledgers.find(l => l.id === chartLedgerId) || appData.ledgers[0];
       document.getElementById('chartLedgerBadge').textContent = targetLedger.name;
+      document.getElementById('chartMonthLabel').textContent = chartMonthFilter === 'ALL' ? '全部期間' : chartMonthFilter.replace('-', '年') + '月';
 
-      document.getElementById('chartMonthLabel').textContent =
-        chartMonthFilter === 'ALL' ? '全部期間' : chartMonthFilter.replace('-', '年') + '月';
+      const btnExp = document.getElementById('btnChartExpense'), btnInc = document.getElementById('btnChartIncome');
+      btnExp.className = chartType === 'expense' ? 'py-1.5 rounded-xl text-xs font-bold bg-[#F2D5DC] text-[#7A5660]' : 'py-1.5 rounded-xl text-xs font-bold text-[#A8948C]';
+      btnInc.className = chartType === 'income' ? 'py-1.5 rounded-xl text-xs font-bold bg-[#F5E5B8] text-[#7A655E]' : 'py-1.5 rounded-xl text-xs font-bold text-[#A8948C]';
 
-      const btnExp = document.getElementById('btnChartExpense');
-      const btnInc = document.getElementById('btnChartIncome');
-      if (chartType === 'expense') {
-        btnExp.className = 'py-1.5 rounded-xl text-xs font-bold bg-[#F2D5DC] text-[#7A5660]';
-        btnInc.className = 'py-1.5 rounded-xl text-xs font-bold text-[#A8948C]';
-      } else {
-        btnInc.className = 'py-1.5 rounded-xl text-xs font-bold bg-[#F5E5B8] text-[#7A655E]';
-        btnExp.className = 'py-1.5 rounded-xl text-xs font-bold text-[#A8948C]';
-      }
+      const btnCat = document.getElementById('btnGroupCategory'), btnWal = document.getElementById('btnGroupWallet');
+      btnCat.className = chartGroupBy === 'category' ? 'px-5 py-1 rounded-full text-xs font-bold bg-[#CFD8E6] text-[#53647D]' : 'px-5 py-1 rounded-full text-xs font-bold text-[#9A857D]';
+      btnWal.className = chartGroupBy === 'wallet' ? 'px-5 py-1 rounded-full text-xs font-bold bg-[#CFD8E6] text-[#53647D]' : 'px-5 py-1 rounded-full text-xs font-bold text-[#9A857D]';
 
-      const btnCat = document.getElementById('btnGroupCategory');
-      const btnWal = document.getElementById('btnGroupWallet');
-      if (chartGroupBy === 'category') {
-        btnCat.className = 'px-5 py-1 rounded-full text-xs font-bold bg-[#CFD8E6] text-[#53647D]';
-        btnWal.className = 'px-5 py-1 rounded-full text-xs font-bold text-[#9A857D]';
-      } else {
-        btnWal.className = 'px-5 py-1 rounded-full text-xs font-bold bg-[#CFD8E6] text-[#53647D]';
-        btnCat.className = 'px-5 py-1 rounded-full text-xs font-bold text-[#9A857D]';
-      }
-
-      const filtered = appData.entries.filter(e => {
-        if (e.ledgerId !== chartLedgerId) return false;
-        if (e.type !== chartType) return false;
-        if (chartMonthFilter !== 'ALL' && !e.date.startsWith(chartMonthFilter)) return false;
-        return true;
-      });
-
-      const visualArea = document.getElementById('pieChartVisualArea');
-      const listArea = document.getElementById('chartBreakdownList');
+      const filtered = appData.entries.filter(e => e.ledgerId === chartLedgerId && e.type === chartType && (chartMonthFilter === 'ALL' || e.date.startsWith(chartMonthFilter)));
+      const visualArea = document.getElementById('pieChartVisualArea'), listArea = document.getElementById('chartBreakdownList');
 
       if (filtered.length === 0) {
-        visualArea.innerHTML = `
-          <div class="py-8 text-center">
-            <div class="w-12 h-12 mx-auto mb-2 p-2 rounded-full bg-[#FAF5F0] border border-[#E2D5CE]">${CHART_NAV_SVG}</div>
-            <p class="text-xs font-bold text-[#9A857D]">此期間沒有${chartType === 'expense' ? '支出' : '收入'}紀錄</p>
-          </div>`;
-        listArea.innerHTML = '';
-        return;
+        visualArea.innerHTML = `<div class="py-8 text-center"><div class="w-12 h-12 mx-auto mb-2 p-2 rounded-full bg-[#FAF5F0] border border-[#E2D5CE]">${CHART_NAV_SVG}</div><p class="text-xs font-bold text-[#9A857D]">此期間沒有${chartType === 'expense' ? '支出' : '收入'}紀錄</p></div>`;
+        listArea.innerHTML = ''; return;
       }
 
-      const aggMap = {};
-      let grandTotal = 0;
-
+      const aggMap = {}; let grandTotal = 0;
       filtered.forEach(e => {
-        const val = Number(e.amount) || 0;
-        grandTotal += val;
+        const val = Number(e.amount) || 0; grandTotal += val;
         if (chartGroupBy === 'category') {
           const key = e.category || '其他';
           if (!aggMap[key]) aggMap[key] = { name: key, amount: 0, iconSvg: getCategoryIconSvg(e.type, key) };
@@ -1509,240 +1135,76 @@
       });
 
       const items = Object.values(aggMap).sort((a, b) => b.amount - a.amount);
-
       const cx = 110, cy = 110, outerR = 82, innerR = 48;
-      let startAngle = -Math.PI / 2;
-      let slicesSvg = '';
-
+      let startAngle = -Math.PI / 2, slicesSvg = '';
       items.forEach((item, idx) => {
-        const ratio = item.amount / grandTotal;
-        const color = CHART_PALETTE[idx % CHART_PALETTE.length];
-        const sweep = ratio * Math.PI * 2;
-        const endAngle = startAngle + sweep;
-
+        const ratio = item.amount / grandTotal, color = CHART_PALETTE[idx % CHART_PALETTE.length], sweep = ratio * Math.PI * 2, endAngle = startAngle + sweep;
         if (items.length === 1) {
-          slicesSvg += `
-            <circle cx="${cx}" cy="${cy}" r="${(outerR + innerR) / 2}"
-              fill="none" stroke="${color}" stroke-width="${outerR - innerR}" />`;
+          slicesSvg += `<circle cx="${cx}" cy="${cy}" r="${(outerR + innerR) / 2}" fill="none" stroke="${color}" stroke-width="${outerR - innerR}" />`;
         } else {
-          const x1 = cx + outerR * Math.cos(startAngle);
-          const y1 = cy + outerR * Math.sin(startAngle);
-          const x2 = cx + outerR * Math.cos(endAngle);
-          const y2 = cy + outerR * Math.sin(endAngle);
-          const x3 = cx + innerR * Math.cos(endAngle);
-          const y3 = cy + innerR * Math.sin(endAngle);
-          const x4 = cx + innerR * Math.cos(startAngle);
-          const y4 = cy + innerR * Math.sin(startAngle);
-          const largeArc = sweep > Math.PI ? 1 : 0;
-
-          const d = [
-            `M ${x1.toFixed(2)} ${y1.toFixed(2)}`,
-            `A ${outerR} ${outerR} 0 ${largeArc} 1 ${x2.toFixed(2)} ${y2.toFixed(2)}`,
-            `L ${x3.toFixed(2)} ${y3.toFixed(2)}`,
-            `A ${innerR} ${innerR} 0 ${largeArc} 0 ${x4.toFixed(2)} ${y4.toFixed(2)}`,
-            'Z'
-          ].join(' ');
-
-          slicesSvg += `<path d="${d}" fill="${color}" stroke="#FFFDFB" stroke-width="2" />`;
+          const x1 = cx + outerR * Math.cos(startAngle), y1 = cy + outerR * Math.sin(startAngle), x2 = cx + outerR * Math.cos(endAngle), y2 = cy + outerR * Math.sin(endAngle);
+          const x3 = cx + innerR * Math.cos(endAngle), y3 = cy + innerR * Math.sin(endAngle), x4 = cx + innerR * Math.cos(startAngle), y4 = cy + innerR * Math.sin(startAngle);
+          slicesSvg += `<path d="M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${outerR} ${outerR} 0 ${sweep > Math.PI ? 1 : 0} 1 ${x2.toFixed(2)} ${y2.toFixed(2)} L ${x3.toFixed(2)} ${y3.toFixed(2)} A ${innerR} ${innerR} 0 ${sweep > Math.PI ? 1 : 0} 0 ${x4.toFixed(2)} ${y4.toFixed(2)} Z" fill="${color}" stroke="#FFFDFB" stroke-width="2" />`;
         }
         startAngle = endAngle;
       });
 
-      visualArea.innerHTML = `
-        <div class="relative w-[220px] h-[220px] flex items-center justify-center">
-          <svg viewBox="0 0 220 220" class="w-full h-full">
-            ${slicesSvg}
-          </svg>
-          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none px-4 text-center">
-            <span class="text-[11px] font-bold text-[#9A857D]">${chartType === 'expense' ? '總支出' : '總收入'}</span>
-            <span class="text-base font-bold text-[#7A655E] mt-0.5 truncate max-w-[92px]">$${grandTotal.toLocaleString()}</span>
-          </div>
-        </div>
-      `;
-
+      visualArea.innerHTML = `<div class="relative w-[220px] h-[220px] flex items-center justify-center"><svg viewBox="0 0 220 220" class="w-full h-full">${slicesSvg}</svg><div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none px-4 text-center"><span class="text-[11px] font-bold text-[#9A857D]">${chartType === 'expense' ? '總支出' : '總收入'}</span><span class="text-base font-bold text-[#7A655E] mt-0.5 truncate max-w-[92px]">$${grandTotal.toLocaleString()}</span></div></div>`;
       listArea.innerHTML = items.map((item, idx) => {
-        const pct = ((item.amount / grandTotal) * 100).toFixed(1);
-        const color = CHART_PALETTE[idx % CHART_PALETTE.length];
-        return `
-          <div class="py-3 flex items-center justify-between gap-3">
-            <div class="flex items-center gap-2.5 min-w-0 flex-1">
-              <div class="w-9 h-9 rounded-2xl p-1.5 bg-[#FAF5F0] border border-[#E2D5CE] shrink-0">
-                ${item.iconSvg}
-              </div>
-              <div class="min-w-0 flex-1">
-                <div class="flex items-center gap-1.5">
-                  <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color:${color}"></span>
-                  <span class="text-sm font-bold text-[#7A655E] truncate">${escapeHtml(item.name)}</span>
-                  <span class="text-xs font-bold text-[#9A857D]">${pct}%</span>
-                </div>
-                <div class="w-full h-1.5 bg-[#FAF5F0] rounded-full mt-1.5 overflow-hidden">
-                  <div class="h-full rounded-full" style="width:${Math.max(4, pct)}%; background-color:${color}"></div>
-                </div>
-              </div>
-            </div>
-            <div class="text-sm font-bold text-[#7A655E] shrink-0">
-              NT$${item.amount.toLocaleString()}
-            </div>
-          </div>`;
+        const pct = ((item.amount / grandTotal) * 100).toFixed(1), color = CHART_PALETTE[idx % CHART_PALETTE.length];
+        return `<div class="py-3 flex items-center justify-between gap-3"><div class="flex items-center gap-2.5 min-w-0 flex-1"><div class="w-9 h-9 rounded-2xl p-1.5 bg-[#FAF5F0] border border-[#E2D5CE] shrink-0">${item.iconSvg}</div><div class="min-w-0 flex-1"><div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color:${color}"></span><span class="text-sm font-bold text-[#7A655E] truncate">${escapeHtml(item.name)}</span><span class="text-xs font-bold text-[#9A857D]">${pct}%</span></div><div class="w-full h-1.5 bg-[#FAF5F0] rounded-full mt-1.5 overflow-hidden"><div class="h-full rounded-full" style="width:${Math.max(4, pct)}%; background-color:${color}"></div></div></div></div><div class="text-sm font-bold text-[#7A655E] shrink-0">NT$${item.amount.toLocaleString()}</div></div>`;
       }).join('');
     }
 
-    function selectChartLedger(id) {
-      chartLedgerId = id;
-      renderChartView();
-    }
-
-    function setChartType(type) {
-      chartType = type;
-      renderChartView();
-    }
-
-    function setChartGroupBy(groupBy) {
-      chartGroupBy = groupBy;
-      renderChartView();
-    }
-
-    function toggleChartAllMonths() {
-      if (chartMonthFilter === 'ALL') {
-        const now = new Date();
-        chartMonthFilter = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-      } else {
-        chartMonthFilter = 'ALL';
-      }
-      renderChartView();
-    }
-
+    function selectChartLedger(id) { chartLedgerId = id; renderChartView(); }
+    function setChartType(type) { chartType = type; renderChartView(); }
+    function setChartGroupBy(groupBy) { chartGroupBy = groupBy; renderChartView(); }
+    function toggleChartAllMonths() { chartMonthFilter = chartMonthFilter === 'ALL' ? `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}` : 'ALL'; renderChartView(); }
     function shiftChartMonth(delta) {
-      if (chartMonthFilter === 'ALL') {
-        const now = new Date();
-        chartMonthFilter = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-      } else {
-        const [y, m] = chartMonthFilter.split('-').map(Number);
-        const d = new Date(y, m - 1 + delta, 1);
-        chartMonthFilter = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-      }
+      if (chartMonthFilter === 'ALL') chartMonthFilter = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+      else { const [y, m] = chartMonthFilter.split('-').map(Number); const d = new Date(y, m - 1 + delta, 1); chartMonthFilter = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; }
       renderChartView();
     }
 
-    // ==================== 錢包與帳戶邏輯 ====================
     function renderWallets() {
-      let totalAssets = 0;
-      let totalDebt = 0;
-
+      let totalAssets = 0, totalDebt = 0;
       appData.wallets.forEach(w => {
         if (!w.includeInTotal) return;
         const bal = Number(w.balance) || 0;
-        if (w.isDebt) {
-          totalDebt += Math.max(0, bal);
-        } else {
-          if (bal >= 0) totalAssets += bal;
-          else totalDebt += Math.abs(bal);
-        }
+        if (w.isDebt) totalDebt += Math.max(0, bal);
+        else { if (bal >= 0) totalAssets += bal; else totalDebt += Math.abs(bal); }
       });
-
       const netWorth = totalAssets - totalDebt;
       const fmt = (num) => hideBalances ? '****' : 'NT$' + Number(num).toLocaleString();
-
       document.getElementById('walletNetWorth').textContent = hideBalances ? '****' : (netWorth < 0 ? '-NT$' : 'NT$') + Math.abs(netWorth).toLocaleString();
       document.getElementById('walletTotalAssets').textContent = fmt(totalAssets);
       document.getElementById('walletTotalDebt').textContent = fmt(totalDebt);
 
       const groupsMap = {};
-      appData.wallets.forEach(w => {
-        const gName = w.group || '其他帳戶';
-        if (!groupsMap[gName]) groupsMap[gName] = [];
-        groupsMap[gName].push(w);
-      });
-
-      const container = document.getElementById('walletGroupsContainer');
-      container.innerHTML = Object.keys(groupsMap).map(groupName => {
-        const list = groupsMap[groupName];
-        let groupSum = 0;
-        list.forEach(w => {
-          const bal = Number(w.balance) || 0;
-          groupSum += w.isDebt ? -bal : bal;
-        });
-
+      appData.wallets.forEach(w => { const gName = w.group || '其他帳戶'; if (!groupsMap[gName]) groupsMap[gName] = []; groupsMap[gName].push(w); });
+      document.getElementById('walletGroupsContainer').innerHTML = Object.keys(groupsMap).map(groupName => {
+        const list = groupsMap[groupName]; let groupSum = 0;
+        list.forEach(w => { const bal = Number(w.balance) || 0; groupSum += w.isDebt ? -bal : bal; });
         const cardsHtml = list.map(w => {
-          const iconSvg = (WALLET_ICONS[w.icon] || WALLET_ICONS.cash).svg;
-          const bal = Number(w.balance) || 0;
-          const displayBal = hideBalances
-            ? '****'
-            : w.isDebt
-              ? (bal > 0 ? `-NT$${bal.toLocaleString()}` : 'NT$0')
-              : `${bal < 0 ? '-' : ''}NT$${Math.abs(bal).toLocaleString()}`;
-
-          return `
-            <div onclick="openEditWalletModal('${w.id}')" class="py-3 flex items-center justify-between cursor-pointer hover:bg-[#FAF5F0]/60 px-2 rounded-2xl transition">
-              <div class="flex items-center gap-3 min-w-0">
-                <div class="w-10 h-10 rounded-2xl p-1.5 bg-[#FFFDFB] border border-[#E2D5CE] shrink-0">
-                  ${iconSvg}
-                </div>
-                <div class="min-w-0">
-                  <div class="font-bold text-sm text-[#7A655E] truncate">${escapeHtml(w.name)}</div>
-                  <div class="text-[11px] text-[#A8948C] truncate">
-                    ${w.note ? escapeHtml(w.note) : (w.isDebt ? '信用卡/負債帳戶' : '可用餘額')}
-                    ${!w.includeInTotal ? ' · 不計入總資產' : ''}
-                  </div>
-                </div>
-              </div>
-              <div class="flex items-center gap-1.5 shrink-0">
-                <span class="font-bold text-sm ${w.isDebt && bal > 0 ? 'text-[#C97B8E]' : 'text-[#5D708A]'}">${displayBal}</span>
-                <span class="text-[#C8B8B0] text-xs">›</span>
-              </div>
-            </div>`;
+          const iconSvg = (WALLET_ICONS[w.icon] || WALLET_ICONS.cash).svg, bal = Number(w.balance) || 0;
+          const displayBal = hideBalances ? '****' : w.isDebt ? (bal > 0 ? `-NT$${bal.toLocaleString()}` : 'NT$0') : `${bal < 0 ? '-' : ''}NT$${Math.abs(bal).toLocaleString()}`;
+          return `<div onclick="openEditWalletModal('${w.id}')" class="py-3 flex items-center justify-between cursor-pointer hover:bg-[#FAF5F0]/60 px-2 rounded-2xl transition"><div class="flex items-center gap-3 min-w-0"><div class="w-10 h-10 rounded-2xl p-1.5 bg-[#FFFDFB] border border-[#E2D5CE] shrink-0">${iconSvg}</div><div class="min-w-0"><div class="font-bold text-sm text-[#7A655E] truncate">${escapeHtml(w.name)}</div><div class="text-[11px] text-[#A8948C] truncate">${w.note ? escapeHtml(w.note) : (w.isDebt ? '信用卡/負債帳戶' : '可用餘額')}${!w.includeInTotal ? ' · 不計入總資產' : ''}</div></div></div><div class="flex items-center gap-1.5 shrink-0"><span class="font-bold text-sm ${w.isDebt && bal > 0 ? 'text-[#C97B8E]' : 'text-[#5D708A]'}">${displayBal}</span><span class="text-[#C8B8B0] text-xs">›</span></div></div>`;
         }).join('');
-
-        return `
-          <section class="kawaii-card rounded-3xl p-4">
-            <div class="flex items-center justify-between pb-2 mb-1 border-b border-dashed border-[#E2D5CE]">
-              <span class="text-xs font-bold text-[#8C9BB0]">${escapeHtml(groupName)}</span>
-              <span class="text-xs font-bold text-[#7A655E]">
-                ${hideBalances ? '****' : (groupSum < 0 ? '-NT$' : 'NT$') + Math.abs(groupSum).toLocaleString()}
-              </span>
-            </div>
-            <div class="divide-y divide-[#F2EAE4]">${cardsHtml}</div>
-          </section>`;
+        return `<section class="kawaii-card rounded-3xl p-4"><div class="flex items-center justify-between pb-2 mb-1 border-b border-dashed border-[#E2D5CE]"><span class="text-xs font-bold text-[#8C9BB0]">${escapeHtml(groupName)}</span><span class="text-xs font-bold text-[#7A655E]">${hideBalances ? '****' : (groupSum < 0 ? '-NT$' : 'NT$') + Math.abs(groupSum).toLocaleString()}</span></div><div class="divide-y divide-[#F2EAE4]">${cardsHtml}</div></section>`;
       }).join('');
     }
 
-    function toggleHideBalance() {
-      hideBalances = !hideBalances;
-      renderWallets();
-    }
+    function toggleHideBalance() { hideBalances = !hideBalances; renderWallets(); }
 
     function openNewWalletTypeModal() {
-      const list = document.getElementById('walletTypeList');
-      list.innerHTML = WALLET_TYPE_PRESETS.map(p => {
-        const iconSvg = (WALLET_ICONS[p.icon] || WALLET_ICONS.cash).svg;
-        return `
-          <button type="button" onclick="openCreateWalletForm('${p.type}')" class="w-full p-3 flex items-center justify-between hover:bg-[#FAF5F0] text-left transition">
-            <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-2xl p-1.5 bg-[#FAF5F0] border border-[#E2D5CE]">${iconSvg}</div>
-              <div>
-                <div class="text-sm font-bold text-[#7A655E]">${p.name}</div>
-                <div class="text-[11px] text-[#A8948C]">${p.desc}</div>
-              </div>
-            </div>
-            <span class="text-[#B09C94] font-bold">›</span>
-          </button>`;
-      }).join('');
-
-      const modal = document.getElementById('walletTypeModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
+      document.getElementById('walletTypeList').innerHTML = WALLET_TYPE_PRESETS.map(p => `<button type="button" onclick="openCreateWalletForm('${p.type}')" class="w-full p-3 flex items-center justify-between hover:bg-[#FAF5F0] text-left transition"><div class="flex items-center gap-3"><div class="w-9 h-9 rounded-2xl p-1.5 bg-[#FAF5F0] border border-[#E2D5CE]">${(WALLET_ICONS[p.icon] || WALLET_ICONS.cash).svg}</div><div><div class="text-sm font-bold text-[#7A655E]">${p.name}</div><div class="text-[11px] text-[#A8948C]">${p.desc}</div></div></div><span class="text-[#B09C94] font-bold">›</span></button>`).join('');
+      const modal = document.getElementById('walletTypeModal'); modal.classList.remove('hidden'); modal.classList.add('flex');
     }
-
-    function closeWalletTypeModal() {
-      const modal = document.getElementById('walletTypeModal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    }
+    function closeWalletTypeModal() { const modal = document.getElementById('walletTypeModal'); modal.classList.add('hidden'); modal.classList.remove('flex'); }
 
     function openCreateWalletForm(presetType) {
       closeWalletTypeModal();
       const preset = WALLET_TYPE_PRESETS.find(p => p.type === presetType) || WALLET_TYPE_PRESETS[0];
-
       document.getElementById('editWalletId').value = '';
       document.getElementById('walletCategoryType').value = preset.type;
       document.getElementById('walletFormTitle').textContent = `新增 ${preset.name.split(' ')[0]}`;
@@ -1753,18 +1215,13 @@
       document.getElementById('walletIncludeTotal').checked = true;
       document.getElementById('walletNote').value = '';
       document.getElementById('btnDeleteWallet').classList.add('hidden');
-
       selectWalletIcon(preset.icon);
-
-      const modal = document.getElementById('walletFormModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
+      const modal = document.getElementById('walletFormModal'); modal.classList.remove('hidden'); modal.classList.add('flex');
     }
 
     function openEditWalletModal(id) {
       const w = appData.wallets.find(item => item.id === id);
       if (!w) return;
-
       document.getElementById('editWalletId').value = w.id;
       document.getElementById('walletCategoryType').value = w.type;
       document.getElementById('walletFormTitle').textContent = '編輯帳戶';
@@ -1774,38 +1231,16 @@
       document.getElementById('walletAmountLabel').textContent = w.isDebt ? '目前待還款金額 (NT$)' : '目前餘額 (NT$)';
       document.getElementById('walletIncludeTotal').checked = w.includeInTotal !== false;
       document.getElementById('walletNote').value = w.note || '';
-
       const delBtn = document.getElementById('btnDeleteWallet');
-      if (appData.wallets.length > 1) delBtn.classList.remove('hidden');
-      else delBtn.classList.add('hidden');
-
+      if (appData.wallets.length > 1) delBtn.classList.remove('hidden'); else delBtn.classList.add('hidden');
       selectWalletIcon(w.icon || 'cash');
-
-      const modal = document.getElementById('walletFormModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
+      const modal = document.getElementById('walletFormModal'); modal.classList.remove('hidden'); modal.classList.add('flex');
     }
-
-    function closeWalletFormModal() {
-      const modal = document.getElementById('walletFormModal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    }
+    function closeWalletFormModal() { const modal = document.getElementById('walletFormModal'); modal.classList.add('hidden'); modal.classList.remove('flex'); }
 
     function selectWalletIcon(iconKey) {
       document.getElementById('selectedWalletIcon').value = iconKey;
-      const container = document.getElementById('walletIconPicker');
-      container.innerHTML = Object.keys(WALLET_ICONS).map(key => {
-        const isSel = key === iconKey;
-        return `
-          <button type="button" onclick="selectWalletIcon('${key}')"
-            class="flex flex-col items-center p-1.5 rounded-xl border transition ${
-              isSel ? 'bg-[#EBF0F7] border-[#96ABC9]' : 'bg-white border-[#E2D5CE]'
-            }">
-            <div class="w-6 h-6">${WALLET_ICONS[key].svg}</div>
-            <span class="text-[9px] font-bold text-[#8C766E] mt-0.5">${WALLET_ICONS[key].label}</span>
-          </button>`;
-      }).join('');
+      document.getElementById('walletIconPicker').innerHTML = Object.keys(WALLET_ICONS).map(key => `<button type="button" onclick="selectWalletIcon('${key}')" class="flex flex-col items-center p-1.5 rounded-xl border transition ${key === iconKey ? 'bg-[#EBF0F7] border-[#96ABC9]' : 'bg-white border-[#E2D5CE]'}"><div class="w-6 h-6">${WALLET_ICONS[key].svg}</div><span class="text-[9px] font-bold text-[#8C766E] mt-0.5">${WALLET_ICONS[key].label}</span></button>`).join('');
     }
 
     function handleWalletFormSubmit(e) {
@@ -1813,348 +1248,157 @@
       const editId = document.getElementById('editWalletId').value;
       const presetType = document.getElementById('walletCategoryType').value;
       const preset = WALLET_TYPE_PRESETS.find(p => p.type === presetType) || WALLET_TYPE_PRESETS[0];
-
       const name = document.getElementById('walletName').value.trim();
       const balance = Number(document.getElementById('walletBalance').value) || 0;
       const icon = document.getElementById('selectedWalletIcon').value;
       const includeInTotal = document.getElementById('walletIncludeTotal').checked;
       const note = document.getElementById('walletNote').value.trim();
-
       if (!name) return;
 
       if (editId) {
         const idx = appData.wallets.findIndex(w => w.id === editId);
-        if (idx !== -1) {
-          appData.wallets[idx] = {
-            ...appData.wallets[idx],
-            name,
-            balance,
-            icon,
-            includeInTotal,
-            note
-          };
-        }
+        if (idx !== -1) appData.wallets[idx] = { ...appData.wallets[idx], name, balance, icon, includeInTotal, note };
       } else {
-        appData.wallets.push({
-          id: 'wallet_' + Date.now(),
-          name,
-          type: preset.type,
-          group: preset.group,
-          balance,
-          icon,
-          isDebt: preset.isDebt,
-          includeInTotal,
-          note
-        });
+        appData.wallets.push({ id: 'wallet_' + Date.now(), name, type: preset.type, group: preset.group, balance, icon, isDebt: preset.isDebt, includeInTotal, note });
       }
-
-      saveData();
-      closeWalletFormModal();
-      renderAll();
+      saveData(); closeWalletFormModal(); renderAll();
     }
 
     function deleteWallet() {
       const editId = document.getElementById('editWalletId').value;
-      if (!editId || appData.wallets.length <= 1) return;
-      if (!confirm('確定要刪除此帳戶嗎？原本關聯的紀錄將自動轉移到第一個預設帳戶。')) return;
-
+      if (!editId || appData.wallets.length <= 1 || !confirm('確定要刪除此帳戶嗎？原本關聯的紀錄將自動轉移到第一個預設帳戶。')) return;
       const fallbackId = appData.wallets.find(w => w.id !== editId).id;
-      appData.entries.forEach(e => {
-        if (e.walletId === editId) e.walletId = fallbackId;
-      });
+      appData.entries.forEach(e => { if (e.walletId === editId) e.walletId = fallbackId; });
       appData.wallets = appData.wallets.filter(w => w.id !== editId);
-      saveData();
-      closeWalletFormModal();
-      renderAll();
+      saveData(); closeWalletFormModal(); renderAll();
     }
 
-    // ==================== 帳號備份、匯入還原與刪除重置 ====================
     function openBackupModal() {
       document.getElementById('profileUserName').value = appData.userProfile?.name || '';
-      const status = document.getElementById('lastBackupStatus');
-      status.textContent = appData.userProfile?.lastBackupAt
-        ? `上次備份時間：${appData.userProfile.lastBackupAt}`
-        : '上次備份時間：尚未備份（建議定期備份至雲端）';
-
-      const modal = document.getElementById('backupModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
+      document.getElementById('lastBackupStatus').textContent = appData.userProfile?.lastBackupAt ? `上次備份時間：${appData.userProfile.lastBackupAt}` : '上次備份時間：尚未備份（建議定期備份至雲端）';
+      const modal = document.getElementById('backupModal'); modal.classList.remove('hidden'); modal.classList.add('flex');
     }
-
-    function closeBackupModal() {
-      const modal = document.getElementById('backupModal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    }
+    function closeBackupModal() { const modal = document.getElementById('backupModal'); modal.classList.add('hidden'); modal.classList.remove('flex'); }
 
     function saveUserProfile() {
-      const name = document.getElementById('profileUserName').value.trim();
       if (!appData.userProfile) appData.userProfile = {};
-      appData.userProfile.name = name;
-      saveData();
-      updateUserHeader();
-      alert('個人帳號名稱已儲存！');
+      appData.userProfile.name = document.getElementById('profileUserName').value.trim();
+      saveData(); updateUserHeader(); alert('個人帳號名稱已儲存！');
     }
 
     function clearAccountNameOnly() {
-      if (!appData.userProfile || !appData.userProfile.name) {
-        alert('目前尚未設定個人帳號名稱。');
-        return;
-      }
+      if (!appData.userProfile || !appData.userProfile.name) { alert('目前尚未設定個人帳號名稱。'); return; }
       if (!confirm('確定要清除個人帳號名稱嗎？（不會刪除你的帳本與記帳紀錄）')) return;
-      appData.userProfile.name = '';
-      document.getElementById('profileUserName').value = '';
-      saveData();
-      updateUserHeader();
-      alert('已清除個人帳號名稱！');
+      appData.userProfile.name = ''; document.getElementById('profileUserName').value = '';
+      saveData(); updateUserHeader(); alert('已清除個人帳號名稱！');
     }
 
     function resetAllAccountData() {
-      const check1 = confirm('⚠️ 警告：確定要「刪除帳號並重置全部資料」嗎？\n這將會清空所有帳本、收支明細、錢包餘額、自訂類別與個人帳號名稱！');
-      if (!check1) return;
-
-      const check2 = prompt('為避免誤按，請輸入「刪除」兩個字以確認清空所有資料：');
-      if (check2 !== '刪除') {
-        alert('輸入不符，已取消刪除操作。');
-        return;
-      }
-
-      localStorage.removeItem(STORAGE_KEY);
-      OLD_KEYS.forEach(k => localStorage.removeItem(k));
-
+      if (!confirm('⚠️ 警告：確定要「刪除帳號並重置全部資料」嗎？\n這將會清空所有帳本、收支明細、錢包餘額、自訂類別與個人帳號名稱！')) return;
+      if (prompt('為避免誤按，請輸入「刪除」兩個字以確認清空所有資料：') !== '刪除') { alert('輸入不符，已取消刪除操作。'); return; }
+      localStorage.removeItem(STORAGE_KEY); OLD_KEYS.forEach(k => localStorage.removeItem(k));
       appData = {
-        userProfile: { name: '', lastBackupAt: '' },
-        ledgers: [{ id: 'ledger_default', name: '帳本1' }],
-        activeLedgerId: 'ledger_default',
-        wallets: [
-          { id: 'wallet_cash_default', name: '現金', type: 'cash', group: '現金', balance: 0, icon: 'cash', isDebt: false, includeInTotal: true, note: '預設錢包' }
-        ],
-        entries: [],
-        categories: {
-          expense: [...DEFAULT_EXPENSE_CATS],
-          income: [...DEFAULT_INCOME_CATS]
-        }
+        userProfile: { name: '', lastBackupAt: '' }, ledgers: [{ id: 'ledger_default', name: '帳本1' }], activeLedgerId: 'ledger_default',
+        wallets: [{ id: 'wallet_cash_default', name: '現金', type: 'cash', group: '現金', balance: 0, icon: 'cash', isDebt: false, includeInTotal: true, note: '預設錢包' }],
+        entries: [], categories: { expense: [...DEFAULT_EXPENSE_CATS], income: [...DEFAULT_INCOME_CATS] }
       };
-
-      chartLedgerId = 'ledger_default';
-      saveData();
-      closeBackupModal();
-      renderAll();
-      alert('帳號與所有資料已完全重置為初始狀態！');
+      chartLedgerId = 'ledger_default'; saveData(); closeBackupModal(); renderAll(); alert('帳號與所有資料已完全重置為初始狀態！');
     }
 
     function downloadFullBackup() {
       const nowStr = new Date().toLocaleString('zh-TW');
       if (!appData.userProfile) appData.userProfile = {};
-      appData.userProfile.lastBackupAt = nowStr;
-      saveData();
+      appData.userProfile.lastBackupAt = nowStr; saveData();
       document.getElementById('lastBackupStatus').textContent = `上次備份時間：${nowStr}`;
-
-      const payload = {
-        app: 'KawaiiCloudLedger',
-        version: 4,
-        exportedAt: nowStr,
-        data: appData
-      };
-
-      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      const userPrefix = appData.userProfile.name ? `${appData.userProfile.name}_` : '';
-      a.href = url;
-      a.download = `${userPrefix}記帳本完整備份_${new Date().toISOString().split('T')[0]}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
+      const blob = new Blob([JSON.stringify({ app: 'KawaiiCloudLedger', version: 4, exportedAt: nowStr, data: appData }, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob), a = document.createElement('a');
+      a.href = url; a.download = `${appData.userProfile.name ? appData.userProfile.name + '_' : ''}記帳本完整備份_${new Date().toISOString().split('T')[0]}.json`;
+      a.click(); URL.revokeObjectURL(url);
     }
 
     function importFullBackup(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
+      const file = event.target.files[0]; if (!file) return;
       const reader = new FileReader();
       reader.onload = function(e) {
         try {
           const parsed = JSON.parse(e.target.result);
           const restored = parsed.data ? parsed.data : parsed;
-          if (!restored.ledgers || !restored.wallets) {
-            alert('這不是有效的記帳本備份檔案喔！');
-            return;
-          }
+          if (!restored.ledgers || !restored.wallets) { alert('這不是有效的記帳本備份檔案喔！'); return; }
           if (!confirm('匯入還原檔將會覆蓋目前的本機資料，確定要還原嗎？')) return;
-          appData = restored;
-          chartLedgerId = appData.activeLedgerId;
-          saveData();
-          renderAll();
-          closeBackupModal();
-          alert('資料已 100% 還原成功！');
-        } catch (err) {
-          alert('檔案讀取失敗，請確認選擇正確的 .json 備份檔。');
-        }
+          appData = restored; chartLedgerId = appData.activeLedgerId; saveData(); renderAll(); closeBackupModal(); alert('資料已 100% 還原成功！');
+        } catch (err) { alert('檔案讀取失敗，請確認選擇正確的 .json 備份檔。'); }
       };
-      reader.readAsText(file);
-      event.target.value = '';
+      reader.readAsText(file); event.target.value = '';
     }
 
     function copySyncCode() {
-      const jsonStr = JSON.stringify(appData);
-      const encoded = btoa(encodeURIComponent(jsonStr));
+      const encoded = btoa(encodeURIComponent(JSON.stringify(appData)));
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(encoded).then(() => {
-          alert('已複製「全部備份碼」！你可以貼到 LINE 記事本或傳給自己保存，換手機時點「貼上備份碼還原」即可。');
-        }).catch(() => {
-          prompt('請全選複製以下備份碼保存：', encoded);
-        });
-      } else {
-        prompt('請全選複製以下備份碼保存：', encoded);
-      }
+        navigator.clipboard.writeText(encoded).then(() => alert('已複製「全部備份碼」！你可以貼到 LINE 記事本或傳給自己保存，換手機時點「貼上備份碼還原」即可。')).catch(() => prompt('請全選複製以下備份碼保存：', encoded));
+      } else prompt('請全選複製以下備份碼保存：', encoded);
     }
 
     function restoreFromSyncCode() {
-      const code = prompt('請貼上你先前保存的備份碼：');
-      if (!code || !code.trim()) return;
+      const code = prompt('請貼上你先前保存的備份碼：'); if (!code || !code.trim()) return;
       try {
-        const jsonStr = decodeURIComponent(atob(code.trim()));
-        const restored = JSON.parse(jsonStr);
+        const restored = JSON.parse(decodeURIComponent(atob(code.trim())));
         if (!restored.ledgers || !restored.wallets) throw new Error('Invalid');
-        appData = restored;
-        chartLedgerId = appData.activeLedgerId;
-        saveData();
-        renderAll();
-        closeBackupModal();
-        alert('備份碼還原成功！所有帳本、錢包與紀錄已恢復。');
-      } catch (e) {
-        alert('備份碼格式不正確，請確認是否完整複製沒有漏字喔！');
-      }
+        appData = restored; chartLedgerId = appData.activeLedgerId; saveData(); renderAll(); closeBackupModal(); alert('備份碼還原成功！所有帳本、錢包與紀錄已恢復。');
+      } catch (e) { alert('備份碼格式不正確，請確認是否完整複製沒有漏字喔！'); }
     }
 
-    // ==================== 自訂類別與圖示管理 ====================
     function openCategoryManager() {
-      renderIconPicker();
-      renderManageCategories();
-      const modal = document.getElementById('categoryModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
+      renderIconPicker(); renderManageCategories();
+      const modal = document.getElementById('categoryModal'); modal.classList.remove('hidden'); modal.classList.add('flex');
     }
-
     function closeCategoryManager() {
-      const modal = document.getElementById('categoryModal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-      if (!document.getElementById('entryModal').classList.contains('hidden')) {
-        renderCategoryChips(document.getElementById('entryType').value);
-      }
+      const modal = document.getElementById('categoryModal'); modal.classList.add('hidden'); modal.classList.remove('flex');
+      if (!document.getElementById('entryModal').classList.contains('hidden')) renderCategoryChips(document.getElementById('entryType').value);
     }
 
     function renderIconPicker() {
       const currentKey = document.getElementById('selectedIconKey').value;
-      const container = document.getElementById('iconPickerContainer');
-
       const groups = {};
-      Object.keys(ICONS_DB).forEach(key => {
-        const g = ICONS_DB[key].group;
-        if (!groups[g]) groups[g] = [];
-        groups[g].push({ key, ...ICONS_DB[key] });
-      });
-
-      container.innerHTML = Object.keys(groups).map(groupName => `
-        <div>
-          <div class="text-[10px] font-bold text-[#9A857D] mb-1">${groupName}</div>
-          <div class="grid grid-cols-5 gap-1.5">
-            ${groups[groupName].map(item => {
-              const isSel = item.key === currentKey;
-              return `
-                <button type="button" onclick="selectIconKey('${item.key}')"
-                  class="flex flex-col items-center p-1.5 rounded-xl border transition ${
-                    isSel ? 'bg-[#EBF0F7] border-[#96ABC9] shadow-2xs' : 'bg-white border-[#E2D5CE] hover:bg-[#FAF5F0]'
-                  }">
-                  <div class="w-6 h-6">${item.svg}</div>
-                  <span class="text-[9px] font-bold text-[#8C766E] mt-0.5 truncate w-full text-center">${item.label}</span>
-                </button>`;
-            }).join('')}
-          </div>
-        </div>
-      `).join('');
+      Object.keys(ICONS_DB).forEach(key => { const g = ICONS_DB[key].group; if (!groups[g]) groups[g] = []; groups[g].push({ key, ...ICONS_DB[key] }); });
+      document.getElementById('iconPickerContainer').innerHTML = Object.keys(groups).map(groupName => `<div><div class="text-[10px] font-bold text-[#9A857D] mb-1">${groupName}</div><div class="grid grid-cols-5 gap-1.5">${groups[groupName].map(item => `<button type="button" onclick="selectIconKey('${item.key}')" class="flex flex-col items-center p-1.5 rounded-xl border transition ${item.key === currentKey ? 'bg-[#EBF0F7] border-[#96ABC9] shadow-2xs' : 'bg-white border-[#E2D5CE] hover:bg-[#FAF5F0]'}"><div class="w-6 h-6">${item.svg}</div><span class="text-[9px] font-bold text-[#8C766E] mt-0.5 truncate w-full text-center">${item.label}</span></button>`).join('')}</div></div>`).join('');
     }
-
-    function selectIconKey(key) {
-      document.getElementById('selectedIconKey').value = key;
-      renderIconPicker();
-    }
+    function selectIconKey(key) { document.getElementById('selectedIconKey').value = key; renderIconPicker(); }
 
     function renderManageCategories() {
       ['expense', 'income'].forEach(type => {
-        const container = document.getElementById(type === 'expense' ? 'manageExpenseCats' : 'manageIncomeCats');
         const list = appData.categories[type] || [];
-        container.innerHTML = list.map((cat, idx) => {
-          const iconSvg = (ICONS_DB[cat.icon] || ICONS_DB.star).svg;
-          return `
-            <span class="inline-flex items-center gap-1.5 bg-[#FFFDFB] border border-[#E2D5CE] px-2.5 py-1 rounded-full text-xs font-bold text-[#7A655E]">
-              <span class="w-4 h-4 inline-block">${iconSvg}</span>
-              <span>${escapeHtml(cat.name)}</span>
-              ${list.length > 1 ? `<button onclick="deleteCategory('${type}', ${idx})" class="text-[#C97B8E] hover:text-[#A35468] ml-0.5 font-bold">✕</button>` : ''}
-            </span>`;
-        }).join('');
+        document.getElementById(type === 'expense' ? 'manageExpenseCats' : 'manageIncomeCats').innerHTML = list.map((cat, idx) => `<span class="inline-flex items-center gap-1.5 bg-[#FFFDFB] border border-[#E2D5CE] px-2.5 py-1 rounded-full text-xs font-bold text-[#7A655E]"><span class="w-4 h-4 inline-block">${(ICONS_DB[cat.icon] || ICONS_DB.star).svg}</span><span>${escapeHtml(cat.name)}</span>${list.length > 1 ? `<button onclick="deleteCategory('${type}', ${idx})" class="text-[#C97B8E] hover:text-[#A35468] ml-0.5 font-bold">✕</button>` : ''}</span>`).join('');
       });
     }
 
     function addCategoryFromManager() {
-      const type = document.getElementById('newCatType').value;
-      const nameInput = document.getElementById('newCatName');
-      const name = nameInput.value.trim();
-      const icon = document.getElementById('selectedIconKey').value;
-
+      const type = document.getElementById('newCatType').value, nameInput = document.getElementById('newCatName'), name = nameInput.value.trim(), icon = document.getElementById('selectedIconKey').value;
       if (!name) return;
-      if (appData.categories[type].some(c => c.name === name)) {
-        alert('這個類別已經存在囉！');
-        return;
-      }
-
-      appData.categories[type].push({ name, icon });
-      nameInput.value = '';
-      saveData();
-      renderManageCategories();
+      if (appData.categories[type].some(c => c.name === name)) { alert('這個類別已經存在囉！'); return; }
+      appData.categories[type].push({ name, icon }); nameInput.value = ''; saveData(); renderManageCategories();
     }
 
     function deleteCategory(type, index) {
       if (appData.categories[type].length <= 1) return;
-      appData.categories[type].splice(index, 1);
-      saveData();
-      renderManageCategories();
+      appData.categories[type].splice(index, 1); saveData(); renderManageCategories();
     }
 
-    // ==================== CSV 匯出 ====================
     function exportCSV() {
       const activeLedger = appData.ledgers.find(l => l.id === appData.activeLedgerId);
       const list = appData.entries.filter(e => e.ledgerId === appData.activeLedgerId);
-      if (list.length === 0) {
-        alert('目前這個帳本還沒有紀錄可以匯出喔！');
-        return;
-      }
-
+      if (list.length === 0) { alert('目前這個帳本還沒有紀錄可以匯出喔！'); return; }
       let csv = '\uFEFF帳本,日期,類型,使用錢包,類別,店家,購買商品明細,金額,備註\n';
       list.forEach(item => {
-        const typeText = item.type === 'expense' ? '支出' : '收入';
-        const walletName = getWalletNameById(item.walletId);
-        const storeText = (item.store || '').replace(/"/g, '""');
-        const productsText = (Array.isArray(item.products) ? item.products.join(' / ') : '').replace(/"/g, '""');
-        const noteText = (item.note || '').replace(/"/g, '""');
-        csv += `"${activeLedger.name}","${item.date}","${typeText}","${walletName}","${item.category}","${storeText}","${productsText}",${item.amount},"${noteText}"\n`;
+        csv += `"${activeLedger.name}","${item.date}","${item.type === 'expense' ? '支出' : '收入'}","${getWalletNameById(item.walletId)}","${item.category}","${(item.store || '').replace(/"/g, '""')}","${(Array.isArray(item.products) ? item.products.join(' / ') : '').replace(/"/g, '""')}",${item.amount},"${(item.note || '').replace(/"/g, '""')}"\n`;
       });
-
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `記帳本_${activeLedger.name}_${new Date().toISOString().split('T')[0]}.csv`;
-      a.click();
-      URL.revokeObjectURL(url);
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }), url = URL.createObjectURL(blob), a = document.createElement('a');
+      a.href = url; a.download = `記帳本_${activeLedger.name}_${new Date().toISOString().split('T')[0]}.csv`; a.click(); URL.revokeObjectURL(url);
     }
 
     function formatDateDisplay(dateStr) {
       const [y, m, d] = dateStr.split('-');
       const weekDays = ['週日', '週一', '週二', '週三', '週四', '週五', '週六'];
-      const dayName = weekDays[new Date(y, m - 1, d).getDay()];
-      return `${Number(m)}/${Number(d)} (${dayName})`;
+      return `${Number(m)}/${Number(d)} (${weekDays[new Date(y, m - 1, d).getDay()]})`;
     }
 
     function escapeHtml(str) {
@@ -2162,9 +1406,7 @@
     }
 
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(() => {});
-      });
+      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
     }
 
     init();
