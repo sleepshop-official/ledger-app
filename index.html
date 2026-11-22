@@ -61,7 +61,7 @@
     }
   </style>
 </head>
-<body class="min-h-screen pb-32">
+<body class="min-h-screen pb-36">
 
   <!-- ==================== 分頁 1：記帳本主畫面 ==================== -->
   <div id="viewLedger">
@@ -226,8 +226,8 @@
     <main class="max-w-md mx-auto px-4 space-y-3.5 mt-1" id="walletGroupsContainer"></main>
   </div>
 
-  <!-- 底部懸浮記帳按鈕 -->
-  <div id="floatingAddBtn" class="fixed bottom-18 left-0 right-0 flex justify-center z-30 pointer-events-none">
+  <!-- 底部懸浮記帳按鈕（固定懸浮於底部導覽列正上方） -->
+  <div id="floatingAddBtn" class="fixed bottom-[72px] left-0 right-0 flex justify-center z-30 pointer-events-none">
     <button onclick="openEntryModal()" class="pointer-events-auto bg-[#CFD8E6] hover:bg-[#BFCBE0] text-[#6E5B54] font-bold px-7 py-3 rounded-full border-2 border-[#FFFDFB] shadow-md flex items-center gap-2 transition transform active:scale-95">
       <span class="w-5 h-5 rounded-full bg-[#F5E5B8] border border-[#9E8880] text-[#7A655E] flex items-center justify-center text-sm font-bold">＋</span>
       <span>記一筆帳</span>
@@ -344,15 +344,16 @@
           <input type="number" id="entryAmount" min="1" step="1" required class="kawaii-input w-full font-bold text-lg px-3 py-2 rounded-2xl" />
         </div>
 
-        <div class="flex gap-2.5 pt-2">
-          <button type="button" onclick="closeEntryModal()" class="flex-1 py-2.5 rounded-2xl bg-[#F9EAEF] border border-[#E2D5CE] text-[#8C766E] font-bold text-sm">取消</button>
+        <div class="flex gap-2 pt-2">
+          <button type="button" id="btnDeleteEntryInModal" onclick="deleteEntryFromModal()" class="hidden px-4 py-2.5 rounded-2xl bg-[#F9EAEF] border border-[#E5BEC7] text-[#C97B8E] font-bold text-sm">刪除</button>
+          <button type="button" onclick="closeEntryModal()" class="flex-1 py-2.5 rounded-2xl bg-[#FAF5F0] border border-[#E2D5CE] text-[#8C766E] font-bold text-sm">取消</button>
           <button type="submit" class="flex-1 py-2.5 rounded-2xl bg-[#CFD8E6] border border-[#B3C1D6] text-[#6E5B54] font-bold text-sm shadow-xs">儲存紀錄</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- ==================== 彈窗 1B：填寫商品明細視窗（z-[70] 確保浮在新增一筆帳最前方） ==================== -->
+  <!-- ==================== 彈窗 1B：填寫商品明細視窗 ==================== -->
   <div id="productsModal" class="fixed inset-0 bg-[#5E4D47]/45 backdrop-blur-xs hidden items-center justify-center z-[70] px-4">
     <div class="bg-[#FFFDFB] border-2 border-[#D4C3BA] shadow-2xl w-full max-w-xs rounded-3xl p-5 max-h-[82vh] overflow-y-auto">
       <div class="flex justify-between items-center mb-3">
@@ -591,491 +592,210 @@
 
     const CHART_NAV_SVG = `
       <svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="24" cy="24" r="14" fill="#F2D5DC" fill-opacity="0.5"/>
-        <path d="M24 10 A14 14 0 0 1 38 24 H24 Z" fill="#CFD8E6"/>
-        <circle cx="24" cy="24" r="6" fill="#FFFDFB"/>
+        <circle cx="24" cy="24" r="15" fill="#FFFDFB"/>
+        <path d="M24 9 A15 15 0 0 1 38.5 28 L24 24 Z" fill="#F2D5DC"/>
+        <path d="M24 24 L24 9 A15 15 0 0 0 11 31.5 Z" fill="#CFD8E6"/>
+        <circle cx="24" cy="24" r="5" fill="#FFFDFB"/>
       </svg>`;
 
     const WALLET_NAV_SVG = `
       <svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="9" y="13" width="30" height="24" rx="5" fill="#CFD8E6" fill-opacity="0.45"/>
-        <path d="M9 20 H39" stroke-width="1.8"/>
-        <rect x="28" y="24" width="11" height="7" rx="2" fill="#F5E5B8"/>
-        <circle cx="32" cy="27.5" r="1.2" fill="currentColor" stroke="none"/>
+        <rect x="8" y="13" width="32" height="24" rx="6" fill="#FFFDFB"/>
+        <path d="M8 20 H40" stroke="#CFD8E6" stroke-width="3"/>
+        <rect x="29" y="23" width="11" height="7" rx="3" fill="#F5E5B8"/>
+        <circle cx="33" cy="26.5" r="1.3" fill="currentColor"/>
       </svg>`;
 
-    const PIE_COLORS = [
-      '#5B9BD5', '#F17C67', '#F2B84B', '#A385BD',
-      '#4DB6AC', '#EC7096', '#82B366', '#8D99AE',
-      '#E59866', '#6C8EBF'
-    ];
+    const ICONS_DB = {
+      toast: { label: '吐司', group: '食物飲料', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20c-3 0-5-2.5-5-5.5C7 10.5 11 8 24 8s17 2.5 17 6.5c0 3-2 5.5-5 5.5v17a3 3 0 0 1-3 3H15a3 3 0 0 1-3-3V20z" fill="#FFFDFB"/><path d="M15 21v14h18V21" fill="#F5E5B8" stroke="none"/><path d="M21 25c1 1 2 1 3 0M25 25c1 1 2 1 3 0" stroke-width="1.6"/></svg>` },
+      noodle: { label: '麵食', group: '食物飲料', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 24h30c0 9-6.5 15-15 15S9 33 9 24z" fill="#CFD8E6"/><path d="M14 14h22M14 18h22" stroke-width="1.8"/><path d="M18 14v10M23 14v10M28 14v10" stroke="#F5E5B8" stroke-width="2.2"/><path d="M16 39h16"/></svg>` },
+      rice: { label: '便當', group: '食物飲料', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="16" width="30" height="20" rx="6" fill="#FFFDFB"/><path d="M23 16v20M9 26h14" stroke-width="1.6"/><circle cx="31" cy="26" r="4.5" fill="#F2D5DC"/><circle cx="16" cy="21" r="2" fill="#F5E5B8" stroke="none"/></svg>` },
+      burger: { label: '漢堡', group: '食物飲料', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 22c0-7 6-11 14-11s14 4 14 11H10z" fill="#F5E5B8"/><path d="M9 26c3 2 6-2 9 0s6-2 9 0 6-2 10 0" stroke="#A7C4A0" stroke-width="2.5"/><rect x="10" y="30" width="28" height="6" rx="3" fill="#FFFDFB"/></svg>` },
+      boba: { label: '手搖飲', group: '食物飲料', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 17h18l-2.5 22h-13L15 17z" fill="#FFFDFB"/><path d="M16.5 28h15l-1 11h-13l-1-11z" fill="#F5E5B8" stroke="none"/><path d="M13 17h22M26 17l4-8"/><circle cx="21" cy="34" r="1.5" fill="#8C766E" stroke="none"/><circle cx="27" cy="34" r="1.5" fill="#8C766E" stroke="none"/></svg>` },
+      coffee: { label: '咖啡', group: '食物飲料', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19h20v12a8 8 0 0 1-8 8h-4a8 8 0 0 1-8-8V19z" fill="#FFFDFB"/><path d="M32 21h3a4 4 0 0 1 0 8h-3"/><path d="M18 12c0-2 2-2 2-4M24 12c0-2 2-2 2-4" stroke="#B6C5DC"/></svg>` },
+      cake: { label: '甜點', group: '食物飲料', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 25h28v13H10V25z" fill="#FFFDFB"/><path d="M10 25l14-9 14 9" fill="#F2D5DC"/><circle cx="24" cy="13" r="3" fill="#F2D5DC"/></svg>` },
+
+      bus: { label: '公車捷運', group: '交通出行', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="11" y="10" width="26" height="25" rx="6" fill="#CFD8E6"/><rect x="15" y="15" width="18" height="10" rx="2" fill="#FFFDFB"/><circle cx="17" cy="30" r="1.8" fill="#F5E5B8"/><circle cx="31" cy="30" r="1.8" fill="#F5E5B8"/><path d="M15 35v4M33 35v4"/></svg>` },
+      scooter: { label: '機車加油', group: '交通出行', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="33" r="5" fill="#FFFDFB"/><circle cx="34" cy="33" r="5" fill="#FFFDFB"/><path d="M14 33h13l4-13h-5M28 14h5"/><path d="M18 24h10v6H18z" fill="#F5E5B8"/></svg>` },
+      car: { label: '汽車停車', group: '交通出行', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 25l4-9h20l4 9v9H10v-9z" fill="#FFFDFB"/><path d="M14 25h20" fill="#CFD8E6"/><circle cx="16" cy="34" r="3.5" fill="#CFD8E6"/><circle cx="32" cy="34" r="3.5" fill="#CFD8E6"/></svg>` },
+
+      bag: { label: '購物袋', group: '購物生活', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18h24l-2 20H14l-2-20z" fill="#F2D5DC"/><path d="M18 18v-3a6 6 0 0 1 12 0v3"/><path d="M21 25c1.5 1.5 4.5 1.5 6 0" stroke-width="1.7"/></svg>` },
+      cart: { label: '超市日用', group: '購物生活', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 13h5l4 17h16l3-11H16" fill="#FFFDFB"/><circle cx="20" cy="35" r="2.5" fill="#F5E5B8"/><circle cx="32" cy="35" r="2.5" fill="#F5E5B8"/></svg>` },
+      shirt: { label: '服飾穿搭', group: '購物生活', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 12l8 4 8-4 7 6-4 6-3-2v15H16V22l-3 2-4-6 7-6z" fill="#CFD8E6"/></svg>` },
+      cosmetic: { label: '美妝保養', group: '購物生活', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="18" y="22" width="12" height="16" rx="3" fill="#FFFDFB"/><path d="M20 22v-8l8-3v11" fill="#F2D5DC"/></svg>` },
+
+      game: { label: '遊戲娛樂', group: '娛樂與居家', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="17" width="30" height="17" rx="8.5" fill="#CFD8E6"/><path d="M17 22v6M14 25h6" stroke="#FFFDFB" stroke-width="2.2"/><circle cx="31" cy="23.5" r="1.5" fill="#F2D5DC" stroke="none"/><circle cx="34" cy="26.5" r="1.5" fill="#F5E5B8" stroke="none"/></svg>` },
+      movie: { label: '電影追劇', group: '娛樂與居家', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="13" width="28" height="22" rx="4" fill="#FFFDFB"/><path d="M10 19h28M17 13l-3 6M25 13l-3 6M33 13l-3 6" fill="#F5E5B8"/></svg>` },
+      home: { label: '房租水電', group: '娛樂與居家', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 23L24 11l15 12" fill="#F2D5DC"/><path d="M13 21v16h22V21" fill="#FFFDFB"/><rect x="20" y="27" width="8" height="10" rx="2" fill="#CFD8E6"/></svg>` },
+      phone: { label: '電話網路', group: '娛樂與居家', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="15" y="9" width="18" height="30" rx="4" fill="#FFFDFB"/><rect x="18" y="14" width="12" height="18" rx="1.5" fill="#EBF0F7"/><circle cx="24" cy="35" r="1.3" fill="#9E8880"/></svg>` },
+      medical: { label: '醫療保健', group: '娛樂與居家', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="15" width="28" height="22" rx="5" fill="#FFFDFB"/><path d="M19 15v-3a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"/><path d="M24 21v10M19 26h10" stroke="#F2D5DC" stroke-width="3"/></svg>` },
+      pet: { label: '寵物毛孩', group: '娛樂與居家', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="15" cy="19" r="2.8" fill="#F2D5DC"/><circle cx="21" cy="14" r="2.8" fill="#F2D5DC"/><circle cx="27" cy="14" r="2.8" fill="#F2D5DC"/><circle cx="33" cy="19" r="2.8" fill="#F2D5DC"/><path d="M17 30c0-4 3.5-7 7-7s7 3 7 7c0 3-2.5 5-7 5s-7-2-7-5z" fill="#F5E5B8"/></svg>` },
+      book: { label: '學習書籍', group: '娛樂與居家', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 11h21a3 3 0 0 1 3 3v21a3 3 0 0 1-3 3H12V11z" fill="#CFD8E6"/><path d="M12 32h24v5H12z" fill="#FFFDFB"/></svg>` },
+
+      salary: { label: '薪水獎金', group: '收入與理財', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 16h14l4 8c2 5-1 13-11 13s-13-8-11-13l4-8z" fill="#F5E5B8"/><path d="M19 16l-2-5h14l-2 5"/><path d="M24 22v8M21 25h6" stroke-width="1.8"/></svg>` },
+      coin: { label: '零用金幣', group: '收入與理財', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="14" fill="#F5E5B8"/><circle cx="24" cy="24" r="10" stroke-dasharray="2 2"/><path d="M24 18v12M21 21h6"/></svg>` },
+      gift: { label: '紅包禮物', group: '收入與理財', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="11" y="20" width="26" height="18" rx="3" fill="#FFFDFB"/><rect x="9" y="15" width="30" height="6" rx="2" fill="#F2D5DC"/><path d="M24 15v23" stroke="#F2D5DC" stroke-width="3"/><path d="M24 15c-4-5-9-3-7 0h7zm0 0c4-5 9-3 7 0h-7z" fill="#F5E5B8"/></svg>` },
+      star: { label: '其他項目', group: '收入與理財', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M24 10l4.2 8.6 9.5 1.4-6.9 6.7 1.6 9.4L24 31.6l-8.4 4.5 1.6-9.4-6.9-6.7 9.5-1.4L24 10z" fill="#F5E5B8"/></svg>` }
+    };
 
     const WALLET_ICONS = {
-      cash: {
-        label: '現金鈔票',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="9" y="15" width="30" height="17" rx="3" fill="#CFE8D5"/>
-          <circle cx="24" cy="23.5" r="4" fill="#FFFDFB"/>
-          <circle cx="14.5" cy="23.5" r="1.2" fill="#9E8880" stroke="none"/>
-          <circle cx="33.5" cy="23.5" r="1.2" fill="#9E8880" stroke="none"/>
-          <path d="M12 35 H36" stroke-width="1.6"/>
-        </svg>`
-      },
-      debitCard: {
-        label: '金融卡',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="9" y="14" width="30" height="20" rx="3.5" fill="#CFD8E6"/>
-          <rect x="9" y="19" width="30" height="4" fill="#C49BB0" stroke="none"/>
-          <path d="M9 19 H39 M9 23 H39" stroke-width="1.6"/>
-          <path d="M14 28 H22" stroke-width="1.8"/>
-          <circle cx="31" cy="28" r="2" fill="#F2D5DC"/>
-          <circle cx="34" cy="28" r="2" fill="#F5E5B8"/>
-        </svg>`
-      },
-      creditCard: {
-        label: '信用卡',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="9" y="14" width="30" height="20" rx="3.5" fill="#F5E5B8"/>
-          <rect x="14" y="19" width="7" height="5" rx="1" fill="#FFFDFB"/>
-          <path d="M14 29 H23 M26 29 H34" stroke-dasharray="2 2" stroke-width="1.6"/>
-        </svg>`
-      },
-      virtual: {
-        label: '虛擬/行動支付',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="24" cy="24" r="14" fill="#EBF0F7"/>
-          <path d="M20 16 V32 M20 16 H26 C28.5 16 30 17.5 30 20 C30 22 28.5 23.5 26 23.5 H20 M20 23.5 H27 C29.5 23.5 31 25 31 28 C31 30.5 29 32 26.5 32 H20" stroke-width="2"/>
-        </svg>`
-      },
-      invest: {
-        label: '投資帳戶',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="10" y="14" width="28" height="20" rx="3" fill="#F9EAEF"/>
-          <path d="M15 28 L21 22 L26 25 L33 18" stroke="#7D9468" stroke-width="2.2"/>
-          <path d="M28 18 H33 V23" stroke="#7D9468" stroke-width="2"/>
-        </svg>`
-      },
-      lendOut: {
-        label: '借出款項',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="26" cy="17" r="6" fill="#F5E5B8"/>
-          <path d="M26 14 V20" stroke-width="1.6"/>
-          <path d="M11 30 H24 L33 27 C35 26.5 36 28.5 34 30 L24 35 H11 Z" fill="#F2D5DC"/>
-        </svg>`
-      },
-      borrowIn: {
-        label: '借入/分期',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 16 C19 12 29 12 29 16" stroke-width="2"/>
-          <path d="M13 16 H35 L37 36 H11 Z" fill="#CFD8E6"/>
-          <path d="M24 22 V31 M21.5 24 C21.5 22.5 26.5 22.5 26.5 24.5 C26.5 26.5 21.5 26.5 21.5 28.5 C21.5 30.5 26.5 30.5 26.5 29" stroke-width="1.7"/>
-        </svg>`
-      },
-      piggy: {
-        label: '存錢筒',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <ellipse cx="25" cy="25" rx="13" ry="10" fill="#F2D5DC"/>
-          <path d="M12 23 H9 V27 H12" fill="#F2D5DC"/>
-          <path d="M18 34 V38 M31 34 V38" stroke-width="2.2"/>
-          <path d="M21 18 H28" stroke-width="2"/>
-          <circle cx="17" cy="22" r="1.2" fill="#9E8880" stroke="none"/>
-        </svg>`
-      },
-      purse: {
-        label: '零錢包',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="22" cy="13" r="2" fill="#F2D5DC"/>
-          <circle cx="26" cy="13" r="2" fill="#F2D5DC"/>
-          <path d="M15 17 H33 C37 22 37 35 32 36 H16 C11 35 11 22 15 17 Z" fill="#F2D5DC"/>
-          <path d="M15 32 H33" stroke-dasharray="2 2" stroke-width="1.4"/>
-        </svg>`
-      },
-      bankBuilding: {
-        label: '銀行帳戶',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M10 19 L24 10 L38 19 Z" fill="#CFD8E6"/>
-          <path d="M14 19 V34 M20.5 19 V34 M27.5 19 V34 M34 19 V34" stroke-width="2"/>
-          <rect x="10" y="34" width="28" height="4" rx="1" fill="#F5E5B8"/>
-        </svg>`
-      }
+      cash: { label: '現金', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="14" width="32" height="20" rx="4" fill="#F5E5B8"/><circle cx="24" cy="24" r="4.5" fill="#FFFDFB"/><path d="M13 19h2M33 29h2"/></svg>` },
+      bank: { label: '銀行', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19L24 10l15 9H9z" fill="#CFD8E6"/><path d="M14 19v14M21 19v14M27 19v14M34 19v14"/><rect x="9" y="33" width="30" height="4" rx="2" fill="#FFFDFB"/></svg>` },
+      card: { label: '信用卡', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="14" width="32" height="21" rx="4" fill="#F2D5DC"/><path d="M8 21h32" stroke="#FFFDFB" stroke-width="3"/><rect x="13" y="27" width="8" height="4" rx="1" fill="#F5E5B8"/></svg>` },
+      epay: { label: '電子支付', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="9" width="20" height="30" rx="5" fill="#EBF0F7"/><circle cx="24" cy="24" r="6" fill="#F5E5B8"/><path d="M24 21v6M21 24h6"/></svg>` },
+      ticket: { label: '悠遊卡', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="13" width="28" height="22" rx="5" fill="#FFFDFB"/><circle cx="24" cy="24" r="6" fill="#CFD8E6"/><path d="M15 18h4M29 30h4"/></svg>` },
+      stock: { label: '投資帳戶', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="11" width="30" height="26" rx="5" fill="#FFFDFB"/><path d="M15 29l6-7 5 4 7-9" stroke="#7D9468" stroke-width="2.4"/><circle cx="33" cy="17" r="2" fill="#F5E5B8"/></svg>` },
+      piggy: { label: '儲蓄罐', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="24" cy="25" rx="13" ry="10" fill="#F2D5DC"/><path d="M21 15h6" stroke-width="2.5"/><circle cx="18" cy="23" r="1.3" fill="#8C766E"/><path d="M17 34v3M31 34v3"/></svg>` },
+      debt: { label: '應收借出', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="13" fill="#EBF0F7"/><path d="M19 24h10M25 20l4 4-4 4"/></svg>` },
+      loan: { label: '貸款分期', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="10" width="24" height="28" rx="4" fill="#FFFDFB"/><path d="M18 18h12M18 24h12M18 30h7" stroke="#C97B8E"/></svg>` },
+      vault: { label: '其他資產', svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="12" width="28" height="24" rx="5" fill="#F5E5B8"/><circle cx="24" cy="24" r="5" fill="#FFFDFB"/></svg>` }
     };
 
-    const WALLET_TYPE_DEFS = [
-      { type: 'cash', label: '現金', desc: '皮夾現金、零用錢', defaultIcon: 'cash', isDebt: false },
-      { type: 'debit', label: '金融卡', desc: '銀行活存、郵局帳戶', defaultIcon: 'debitCard', isDebt: false },
-      { type: 'credit', label: '信用卡', desc: '街口分期、信用卡循環等也可記在這裡', defaultIcon: 'creditCard', isDebt: true },
-      { type: 'virtual', label: '虛擬帳戶', desc: 'Line Pay、街口、悠遊卡、儲值卡等', defaultIcon: 'virtual', isDebt: false },
-      { type: 'invest', label: '投資', desc: '投資理財相關的帳戶', defaultIcon: 'invest', isDebt: false },
-      { type: 'lend', label: '借出', desc: '借給朋友或代墊款項', defaultIcon: 'lendOut', isDebt: false },
-      { type: 'borrow', label: '借入', desc: '借款或待還負債紀錄', defaultIcon: 'borrowIn', isDebt: true }
+    const WALLET_TYPE_PRESETS = [
+      { type: 'cash', name: '現金', group: '現金', icon: 'cash', isDebt: false, desc: '日常皮夾零用現金' },
+      { type: 'bank', name: '儲蓄卡 / 銀行帳戶', group: '銀行帳戶', icon: 'bank', isDebt: false, desc: '薪轉戶、活存或數位銀行' },
+      { type: 'epay', name: '電子支付', group: '電子錢包', icon: 'epay', isDebt: false, desc: 'LINE Pay、街口、全支付等' },
+      { type: 'ticket', name: '交通儲值卡', group: '電子錢包', icon: 'ticket', isDebt: false, desc: '悠遊卡、一卡通、iCash' },
+      { type: 'credit', name: '信用卡', group: '信用卡與負債', icon: 'card', isDebt: true, desc: '消費累欠額度，還款時降低欠款' },
+      { type: 'stock', name: '投資帳戶', group: '投資理財', icon: 'stock', isDebt: false, desc: '證券戶、ETF、基金資產' },
+      { type: 'receivable', name: '應收款項', group: '其他帳戶', icon: 'debt', isDebt: false, desc: '代墊費用或借給朋友的錢' },
+      { type: 'loan', name: '貸款 / 應付款', group: '信用卡與負債', icon: 'loan', isDebt: true, desc: '分期付款或借入款項' }
     ];
 
-    const PRACTICAL_ICONS = {
-      burger: {
-        group: '美食', label: '漢堡速食',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M10 21 C10 12 38 12 38 21 Z" fill="#F5E5B8"/>
-          <path d="M9 24 Q14 27 19 24 Q24 27 29 24 Q34 27 39 24" stroke="#9CC5A1" stroke-width="2.4"/>
-          <rect x="10" y="28" width="28" height="4" rx="2" fill="#F2D5DC"/>
-          <path d="M11 32 H37 V35 C37 37 35 38 33 38 H15 C13 38 11 37 11 35 Z" fill="#F5E5B8"/>
-        </svg>`
-      },
-      noodles: {
-        group: '美食', label: '麵食正餐',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M10 24 H38 C38 34 31 39 24 39 C17 39 10 34 10 24 Z" fill="#CFD8E6"/>
-          <path d="M16 12 L38 15 M16 16 L38 18" stroke-width="1.8"/>
-          <path d="M20 14 V24 M24 14.5 V24 M28 15 V24" stroke="#F5E5B8" stroke-width="2"/>
-        </svg>`
-      },
-      bread: {
-        group: '美食', label: '吐司早餐',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M13 21 C10 21 9 16 13 13 C17 10 31 10 35 13 C39 16 38 21 35 21 V36 C35 38 33 39 31 39 H17 C15 39 13 38 13 36 Z" fill="#F5E5B8"/>
-          <path d="M17 35 H31" stroke-dasharray="2 2" stroke-width="1.4"/>
-        </svg>`
-      },
-      cake: {
-        group: '美食', label: '甜點蛋糕',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M11 24 L37 16 V36 H11 Z" fill="#FFFDFB"/>
-          <path d="M11 28 H37 V32 H11 Z" fill="#F2D5DC" stroke="none"/>
-          <circle cx="25" cy="15" r="3.5" fill="#F2D5DC"/>
-          <path d="M9 36 H39" stroke-width="2"/>
-        </svg>`
-      },
-      coffee: {
-        group: '飲料', label: '咖啡外帶',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M15 17 H33 L30 40 H18 Z" fill="#F2D5DC"/>
-          <path d="M16 24 H32 L31 32 H17 Z" fill="#F5E5B8"/>
-          <path d="M13 14 H35 V17 H13 Z" fill="#FFFDFB"/>
-        </svg>`
-      },
-      bubbleTea: {
-        group: '飲料', label: '手搖飲品',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M27 8 L25 16" stroke-width="2.4"/>
-          <path d="M15 17 H33 L30 39 H18 Z" fill="#F5E5B8"/>
-          <path d="M13 16 H35" stroke-width="2"/>
-          <circle cx="21" cy="34" r="1.5" fill="#9E8880" stroke="none"/>
-          <circle cx="27" cy="34" r="1.5" fill="#9E8880" stroke="none"/>
-        </svg>`
-      },
-      basket: {
-        group: '購物', label: '購物採買',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M11 22 H37 L34 37 H14 Z" fill="#F2D5DC"/>
-          <path d="M9 19 H39 V22 H9 Z" fill="#F5E5B8"/>
-          <path d="M17 19 L21 11 M31 19 L27 11" stroke-width="2"/>
-        </svg>`
-      },
-      clothes: {
-        group: '購物', label: '服飾穿搭',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 11 L10 16 L13 23 L17 20 V38 H31 V20 L35 23 L38 16 L30 11 C28 14 20 14 18 11 Z" fill="#CFD8E6"/>
-        </svg>`
-      },
-      bus: {
-        group: '交通旅行', label: '大眾交通',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="13" y="10" width="22" height="26" rx="4" fill="#F5E5B8"/>
-          <rect x="16" y="15" width="16" height="10" rx="2" fill="#CFD8E6"/>
-          <path d="M16 36 V39 M32 36 V39" stroke-width="2.4"/>
-        </svg>`
-      },
-      plane: {
-        group: '交通旅行', label: '機票旅遊',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M38 11 L29 20 L13 15 L10 18 L23 25 L17 31 L12 30 L10 32 L17 35 L20 42 L22 40 L21 35 L27 29 L34 42 L37 39 L32 23 L41 14 C42 12 40 10 38 11 Z" fill="#CFD8E6"/>
-        </svg>`
-      },
-      book: {
-        group: '學習生活', label: '書籍學習',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M10 14 C15 12 21 13 24 16 C27 13 33 12 38 14 V35 C33 33 27 34 24 37 C21 34 15 33 10 35 Z" fill="#FFFDFB"/>
-          <path d="M24 16 V37" stroke-width="1.8"/>
-        </svg>`
-      },
-      game: {
-        group: '學習生活', label: '休閒娛樂',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M14 18 H34 C38 18 40 23 39 29 C38 34 34 35 32 31 L29 28 H19 L16 31 C14 35 10 34 9 29 C8 23 10 18 14 18 Z" fill="#CFD8E6"/>
-        </svg>`
-      },
-      home: {
-        group: '居家醫療', label: '房租水電',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M10 23 L24 11 L38 23" stroke-width="2.2"/>
-          <path d="M14 20 V38 H34 V20" fill="#F5E5B8"/>
-          <rect x="21" y="27" width="6" height="11" fill="#F2D5DC"/>
-        </svg>`
-      },
-      medical: {
-        group: '居家醫療', label: '醫療保健',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="10" y="16" width="28" height="22" rx="4" fill="#F2D5DC"/>
-          <circle cx="24" cy="27" r="6" fill="#FFFDFB"/>
-          <path d="M24 24 V30 M21 27 H27" stroke="#C97B8E" stroke-width="2"/>
-        </svg>`
-      },
-      moneyBag: {
-        group: '理財收入', label: '生活費/薪水',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 15 L16 10 H32 L29 15" fill="#F5E5B8"/>
-          <path d="M18 15 C11 20 11 38 24 38 C37 38 37 20 30 15 Z" fill="#F5E5B8"/>
-          <path d="M24 21 V32" stroke-width="1.8"/>
-        </svg>`
-      },
-      giftCard: {
-        group: '理財收入', label: '獎金紅包',
-        svg: `<svg viewBox="0 0 48 48" class="w-full h-full" fill="none" stroke="#9E8880" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="10" y="15" width="28" height="19" rx="3" fill="#F2D5DC"/>
-          <path d="M19 15 V34 M10 24 H38" stroke="#F5E5B8" stroke-width="2.5"/>
-        </svg>`
+    const DEFAULT_EXPENSE_CATS = [
+      { name: '早餐', icon: 'toast' },
+      { name: '午餐', icon: 'noodle' },
+      { name: '晚餐', icon: 'rice' },
+      { name: '飲料點心', icon: 'boba' },
+      { name: '交通', icon: 'bus' },
+      { name: '購物', icon: 'bag' },
+      { name: '娛樂', icon: 'game' },
+      { name: '日用品', icon: 'cart' }
+    ];
+
+    const DEFAULT_INCOME_CATS = [
+      { name: '薪水', icon: 'salary' },
+      { name: '零用錢', icon: 'coin' },
+      { name: '獎金', icon: 'gift' },
+      { name: '其他', icon: 'star' }
+    ];
+
+    const STORAGE_KEY = 'cute_pastel_ledger_v4';
+    const OLD_KEYS = ['cute_pastel_ledger_v3', 'cute_pastel_ledger_v2', 'kawaii_cloud_ledger_v1'];
+
+    let appData = {
+      userProfile: { name: '', lastBackupAt: '' },
+      ledgers: [{ id: 'ledger_default', name: '帳本1' }],
+      activeLedgerId: 'ledger_default',
+      wallets: [
+        { id: 'wallet_cash_default', name: '現金', type: 'cash', group: '現金', balance: 0, icon: 'cash', isDebt: false, includeInTotal: true, note: '預設錢包' }
+      ],
+      entries: [],
+      categories: {
+        expense: [...DEFAULT_EXPENSE_CATS],
+        income: [...DEFAULT_INCOME_CATS]
       }
     };
 
-    function createInitialDefaultData() {
-      return {
-        profile: { userName: '', lastBackup: '' },
-        activeLedgerId: 'ledger_1',
-        ledgers: [{ id: 'ledger_1', name: '帳本1' }],
-        wallets: [
-          { id: 'w_cash', name: '現金', type: 'cash', balance: 0, iconKey: 'cash', includeInTotal: true, note: '' },
-          { id: 'w_bank1', name: '銀行帳戶', type: 'debit', balance: 0, iconKey: 'debitCard', includeInTotal: true, note: '' }
-        ],
-        entries: [],
-        categories: {
-          expense: [
-            { name: '早餐', iconKey: 'bread' },
-            { name: '午餐', iconKey: 'noodles' },
-            { name: '晚餐', iconKey: 'burger' },
-            { name: '飲料點心', iconKey: 'bubbleTea' },
-            { name: '購物', iconKey: 'basket' },
-            { name: '交通', iconKey: 'bus' },
-            { name: '服飾美妝', iconKey: 'clothes' },
-            { name: '居家醫療', iconKey: 'home' }
-          ],
-          income: [
-            { name: '生活費', iconKey: 'moneyBag' },
-            { name: '薪水', iconKey: 'moneyBag' },
-            { name: '獎金紅包', iconKey: 'giftCard' },
-            { name: '其他收入', iconKey: 'coffee' }
-          ]
-        }
-      };
-    }
+    let currentMainTab = 'ledger';
+    let hideBalances = false;
+    let expandedProductEntryIds = new Set();
+    let tempModalProducts = [];
+    let currentEntryProducts = [];
 
-    let appData = JSON.parse(localStorage.getItem('cinna_wallet_v5')) || createInitialDefaultData();
-    if (!appData.profile) appData.profile = { userName: '', lastBackup: '' };
-    if (!appData.wallets || appData.wallets.length === 0) appData.wallets = createInitialDefaultData().wallets;
-    if (!appData.categories) appData.categories = createInitialDefaultData().categories;
-    if (!appData.ledgers || appData.ledgers.length === 0) {
-      appData.ledgers = [{ id: 'ledger_1', name: '帳本1' }];
-      appData.activeLedgerId = 'ledger_1';
-    }
+    let chartLedgerId = 'ledger_default';
+    let chartType = 'expense';
+    let chartGroupBy = 'category';
+    let chartMonthFilter = 'ALL';
 
-    let hideWalletNumbers = false;
-    let storeBlurTimer = null;
-    let currentProductList = [];
-    let expandedEntryIds = new Set();
+    const CHART_PALETTE = [
+      '#9FB6D4', '#E4A8B8', '#E6CC8C', '#A6C29D',
+      '#B8A8D6', '#8FC4C2', '#E5B08C', '#B6C5DC',
+      '#D99B9B', '#C2B29B'
+    ];
 
-    let chartState = {
-      type: 'expense',
-      groupBy: 'category',
-      allTime: true,
-      month: new Date().toISOString().slice(0, 7)
-    };
+    function init() {
+      document.getElementById('headerLogo').innerHTML = CLOUD_LOGO_SVG;
+      document.getElementById('navIconLedger').innerHTML = CLOUD_LOGO_SVG;
+      document.getElementById('navIconChart').innerHTML = CHART_NAV_SVG;
+      document.getElementById('navIconWallet').innerHTML = WALLET_NAV_SVG;
 
-    document.getElementById('headerLogo').innerHTML = CLOUD_LOGO_SVG;
-    document.getElementById('navIconLedger').innerHTML = CLOUD_LOGO_SVG;
-    document.getElementById('navIconChart').innerHTML = CHART_NAV_SVG;
-    document.getElementById('navIconWallet').innerHTML = WALLET_NAV_SVG;
-
-    function saveData() {
-      localStorage.setItem('cinna_wallet_v5', JSON.stringify(appData));
+      loadData();
+      chartLedgerId = appData.activeLedgerId;
       renderAll();
     }
 
-    function escapeHtml(str) {
-      const div = document.createElement('div');
-      div.textContent = str == null ? '' : String(str);
-      return div.innerHTML;
-    }
-
-    function getCatIconSvg(iconKey) {
-      return (PRACTICAL_ICONS[iconKey] || PRACTICAL_ICONS.burger).svg;
-    }
-
-    function getWalletIconSvg(iconKey) {
-      return (WALLET_ICONS[iconKey] || WALLET_ICONS.cash).svg;
-    }
-
-    function findCategoryIconKey(type, catName) {
-      const list = appData.categories[type] || [];
-      const found = list.find(c => c.name === catName);
-      return found ? found.iconKey : (type === 'income' ? 'moneyBag' : 'burger');
-    }
-
-    function findWalletById(walletId) {
-      return appData.wallets.find(w => w.id === walletId) || appData.wallets[0];
-    }
-
-    function normalizeEntryProducts(entry) {
-      if (Array.isArray(entry.productList)) return entry.productList;
-      if (typeof entry.products === 'string' && entry.products.trim()) {
-        return entry.products.split(/[、,，\n]+/).map(s => s.trim()).filter(Boolean);
-      }
-      return [];
-    }
-
-    // --- 店家歷史紀錄即時搜尋 ---
-    function getUniqueStoreHistory() {
-      const seen = new Set();
-      const stores = [];
-      [...appData.entries].reverse().forEach(e => {
-        if (e.type === 'expense' && e.store && e.store.trim()) {
-          const s = e.store.trim();
-          if (!seen.has(s)) {
-            seen.add(s);
-            stores.push(s);
+    function loadData() {
+      let saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) {
+        for (const k of OLD_KEYS) {
+          const old = localStorage.getItem(k);
+          if (old) {
+            saved = old;
+            break;
           }
         }
-      });
-      return stores;
-    }
-
-    function handleStoreInput() {
-      const inputEl = document.getElementById('entryStore');
-      const boxEl = document.getElementById('storeSuggestionsBox');
-      const keyword = inputEl.value.trim().toLowerCase();
-      const allStores = getUniqueStoreHistory();
-
-      if (allStores.length === 0) {
-        boxEl.classList.add('hidden');
-        return;
       }
 
-      const matched = keyword
-        ? allStores.filter(s => s.toLowerCase().includes(keyword))
-        : allStores.slice(0, 8);
-
-      if (matched.length === 0) {
-        boxEl.classList.add('hidden');
-        return;
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed.ledgers && parsed.ledgers.length > 0) {
+            appData.ledgers = parsed.ledgers;
+            appData.activeLedgerId = parsed.activeLedgerId || parsed.ledgers[0].id;
+          }
+          if (parsed.wallets && parsed.wallets.length > 0) {
+            appData.wallets = parsed.wallets;
+          }
+          if (parsed.entries) {
+            appData.entries = parsed.entries.map(e => ({
+              ...e,
+              walletId: e.walletId || appData.wallets[0].id,
+              products: Array.isArray(e.products) ? e.products : []
+            }));
+          }
+          if (parsed.categories) {
+            appData.categories = parsed.categories;
+          }
+          if (parsed.userProfile) {
+            appData.userProfile = parsed.userProfile;
+          }
+        } catch (e) {
+          console.error('讀取儲存資料失敗', e);
+        }
       }
-
-      boxEl.innerHTML = matched.map(storeName => `
-        <button
-          type="button"
-          onmousedown="selectStoreSuggestion(event, '${escapeHtml(storeName).replace(/'/g, "\\'")}')"
-          class="w-full text-left px-3.5 py-2 text-xs font-bold text-[#7A655E] hover:bg-[#EBF0F7] flex items-center justify-between transition"
-        >
-          <span>${escapeHtml(storeName)}</span>
-          <span class="text-[10px] font-medium text-[#8C9BB0]">歷史店家</span>
-        </button>
-      `).join('');
-
-      boxEl.classList.remove('hidden');
+      saveData();
     }
 
-    function selectStoreSuggestion(event, storeName) {
-      event.preventDefault();
-      document.getElementById('entryStore').value = storeName;
-      document.getElementById('storeSuggestionsBox').classList.add('hidden');
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
     }
 
-    function hideStoreSuggestionsDelayed() {
-      clearTimeout(storeBlurTimer);
-      storeBlurTimer = setTimeout(() => {
-        const boxEl = document.getElementById('storeSuggestionsBox');
-        if (boxEl) boxEl.classList.add('hidden');
-      }, 150);
+    function renderAll() {
+      updateUserHeader();
+      renderLedgerTabs();
+      renderLedgerEntries();
+      renderWallets();
+      if (currentMainTab === 'chart') {
+        renderChartView();
+      }
     }
 
-    // --- 彈出視窗填寫商品 1、商品 2 ---
-    function updateProductBtnBadge() {
-      const btn = document.getElementById('btnOpenProductsModal');
-      if (!btn) return;
-      if (currentProductList.length > 0) {
-        btn.textContent = `商品 (${currentProductList.length}項)`;
-        btn.className = 'shrink-0 px-3 py-2 rounded-2xl bg-[#F5E5B8]/80 border border-[#DFC786] text-[#7A655E] text-xs font-bold transition active:scale-95';
+    function updateUserHeader() {
+      const sub = document.getElementById('headerSubtitle');
+      if (appData.userProfile && appData.userProfile.name) {
+        sub.textContent = `${appData.userProfile.name} 的專屬記帳本`;
       } else {
-        btn.textContent = '＋ 商品明細';
-        btn.className = 'shrink-0 px-3 py-2 rounded-2xl bg-[#EBF0F7] hover:bg-[#DCE5F2] border border-[#C3D1E6] text-[#5D708A] text-xs font-bold transition active:scale-95';
+        sub.textContent = '日常收支與帳戶管理';
       }
     }
 
-    function openProductsModal() {
-      const listEl = document.getElementById('productInputsList');
-      const itemsToRender = currentProductList.length > 0 ? [...currentProductList] : ['', ''];
-      listEl.innerHTML = '';
-      itemsToRender.forEach((val, idx) => {
-        appendProductRowHtml(idx + 1, val);
-      });
-
-      const modal = document.getElementById('productsModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-
-    function appendProductRowHtml(num, value = '') {
-      const listEl = document.getElementById('productInputsList');
-      const row = document.createElement('div');
-      row.className = 'flex items-center gap-2 product-input-row';
-      row.innerHTML = `
-        <span class="text-xs font-bold text-[#8C766E] w-12 shrink-0 row-label">商品 ${num}</span>
-        <input type="text" value="${escapeHtml(value)}" class="kawaii-input flex-1 text-sm font-medium px-3 py-1.5 rounded-xl product-val-input" />
-        <button type="button" onclick="removeProductRow(this)" class="w-6 h-6 rounded-full bg-[#F9EAEF] text-[#C97B8E] text-xs font-bold shrink-0">✕</button>
-      `;
-      listEl.appendChild(row);
-    }
-
-    function addProductInputRow() {
-      const count = document.querySelectorAll('#productInputsList .product-input-row').length;
-      appendProductRowHtml(count + 1, '');
-    }
-
-    function removeProductRow(btn) {
-      const rows = document.querySelectorAll('#productInputsList .product-input-row');
-      if (rows.length <= 1) {
-        btn.parentElement.querySelector('input').value = '';
-        return;
-      }
-      btn.parentElement.remove();
-      document.querySelectorAll('#productInputsList .product-input-row').forEach((row, i) => {
-        row.querySelector('.row-label').textContent = `商品 ${i + 1}`;
-      });
-    }
-
-    function saveProductsFromModal() {
-      const inputs = document.querySelectorAll('#productInputsList .product-val-input');
-      currentProductList = Array.from(inputs)
-        .map(inp => inp.value.trim())
-        .filter(Boolean);
-      updateProductBtnBadge();
-      closeProductsModal();
-    }
-
-    function closeProductsModal() {
-      const modal = document.getElementById('productsModal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    }
-
-    function toggleExpandEntryProducts(entryId) {
-      if (expandedEntryIds.has(entryId)) expandedEntryIds.delete(entryId);
-      else expandedEntryIds.add(entryId);
-      renderLedgerPage();
-    }
-
-    // --- 底部三分頁切換 ---
     function switchMainTab(tab) {
+      currentMainTab = tab;
       const viewLedger = document.getElementById('viewLedger');
       const viewChart = document.getElementById('viewChart');
       const viewWallet = document.getElementById('viewWallet');
-      const floatBtn = document.getElementById('floatingAddBtn');
+      const floatingBtn = document.getElementById('floatingAddBtn');
 
       const navLedger = document.getElementById('navTabLedger');
       const navChart = document.getElementById('navTabChart');
@@ -1085,62 +805,90 @@
       viewChart.classList.add('hidden');
       viewWallet.classList.add('hidden');
 
-      navLedger.className = 'flex flex-col items-center justify-center py-1 text-[#B09C94] font-bold';
-      navChart.className = 'flex flex-col items-center justify-center py-1 text-[#B09C94] font-bold';
-      navWallet.className = 'flex flex-col items-center justify-center py-1 text-[#B09C94] font-bold';
+      navLedger.classList.replace('text-[#7A655E]', 'text-[#B09C94]');
+      navChart.classList.replace('text-[#7A655E]', 'text-[#B09C94]');
+      navWallet.classList.replace('text-[#7A655E]', 'text-[#B09C94]');
 
       if (tab === 'ledger') {
         viewLedger.classList.remove('hidden');
-        floatBtn.classList.remove('hidden');
-        navLedger.className = 'flex flex-col items-center justify-center py-1 text-[#7A655E] font-bold';
-        renderLedgerPage();
+        floatingBtn.classList.remove('hidden');
+        navLedger.classList.replace('text-[#B09C94]', 'text-[#7A655E]');
+        renderLedgerTabs();
+        renderLedgerEntries();
       } else if (tab === 'chart') {
         viewChart.classList.remove('hidden');
-        floatBtn.classList.add('hidden');
-        navChart.className = 'flex flex-col items-center justify-center py-1 text-[#6E8099] font-bold';
-        renderChartPage();
+        floatingBtn.classList.add('hidden');
+        navChart.classList.replace('text-[#B09C94]', 'text-[#7A655E]');
+        if (!appData.ledgers.some(l => l.id === chartLedgerId)) {
+          chartLedgerId = appData.activeLedgerId;
+        }
+        renderChartView();
       } else {
         viewWallet.classList.remove('hidden');
-        floatBtn.classList.add('hidden');
-        navWallet.className = 'flex flex-col items-center justify-center py-1 text-[#6E8099] font-bold';
-        renderWalletPage();
+        floatingBtn.classList.add('hidden');
+        navWallet.classList.replace('text-[#B09C94]', 'text-[#7A655E]');
+        renderWallets();
       }
     }
 
-    // --- 多帳本管理 ---
+    // ==================== 帳本與收支邏輯 ====================
+    function renderLedgerTabs() {
+      const container = document.getElementById('ledgerTabs');
+      container.innerHTML = appData.ledgers.map(ledger => {
+        const isActive = ledger.id === appData.activeLedgerId;
+        return `
+          <button onclick="switchLedger('${ledger.id}')"
+            class="shrink-0 px-3.5 py-1.5 rounded-full text-xs font-bold transition active:scale-95 ${
+              isActive
+                ? 'bg-[#7A655E] text-[#FFFDFB] shadow-2xs'
+                : 'bg-[#FFFDFB]/85 text-[#8C766E] border border-[#E2D5CE] hover:bg-white'
+            }">
+            ${escapeHtml(ledger.name)}
+          </button>`;
+      }).join('');
+
+      const activeLedger = appData.ledgers.find(l => l.id === appData.activeLedgerId) || appData.ledgers[0];
+      document.getElementById('currentLedgerTitle').textContent = activeLedger.name;
+      document.getElementById('deleteLedgerBtn').style.display = appData.ledgers.length > 1 ? 'inline-block' : 'none';
+    }
+
     function switchLedger(id) {
       appData.activeLedgerId = id;
+      chartLedgerId = id;
       saveData();
+      renderLedgerTabs();
+      renderLedgerEntries();
     }
 
     function createLedger() {
-      const name = prompt('請輸入新帳本名稱：');
+      const nextNum = appData.ledgers.length + 1;
+      const name = prompt('請輸入新帳本名稱（例如：旅行、生活費、副業）：', `帳本${nextNum}`);
       if (!name || !name.trim()) return;
-      const newId = 'ledger_' + Date.now();
-      appData.ledgers.push({ id: newId, name: name.trim() });
-      appData.activeLedgerId = newId;
+      const newLedger = { id: 'ledger_' + Date.now(), name: name.trim() };
+      appData.ledgers.push(newLedger);
+      appData.activeLedgerId = newLedger.id;
+      chartLedgerId = newLedger.id;
       saveData();
+      renderLedgerTabs();
+      renderLedgerEntries();
     }
 
     function renameCurrentLedger() {
       const current = appData.ledgers.find(l => l.id === appData.activeLedgerId);
       if (!current) return;
-      const newName = prompt('修改帳本名稱：', current.name);
-      if (newName && newName.trim()) {
-        current.name = newName.trim();
-        saveData();
-      }
+      const newName = prompt('請輸入新的帳本名稱：', current.name);
+      if (!newName || !newName.trim()) return;
+      current.name = newName.trim();
+      saveData();
+      renderLedgerTabs();
     }
 
     function openDeleteLedgerModal() {
-      if (appData.ledgers.length <= 1) {
-        alert('至少需要保留一個帳本喔！');
-        return;
-      }
+      if (appData.ledgers.length <= 1) return;
       const current = appData.ledgers.find(l => l.id === appData.activeLedgerId);
-      const count = appData.entries.filter(e => e.ledgerId === appData.activeLedgerId).length;
-      document.getElementById('deleteLedgerDesc').textContent =
-        `「${current.name}」內共有 ${count} 筆收支紀錄。請選擇刪除時如何處理錢包存款餘額：`;
+      const count = appData.entries.filter(e => e.ledgerId === current.id).length;
+      document.getElementById('deleteLedgerDesc').innerHTML =
+        `確定要刪除「<b>${escapeHtml(current.name)}</b>」（共 ${count} 筆紀錄）嗎？<br>請選擇要如何處理這個帳本花掉／存入的錢包餘額：`;
 
       const modal = document.getElementById('deleteLedgerModal');
       modal.classList.remove('hidden');
@@ -1153,453 +901,739 @@
       modal.classList.remove('flex');
     }
 
-    function confirmDeleteLedger(refundToWallet) {
-      const targetEntries = appData.entries.filter(e => e.ledgerId === appData.activeLedgerId);
-      if (refundToWallet) {
-        targetEntries.forEach(entry => {
-          if (entry.walletId) {
-            applyWalletDelta(entry.walletId, entry.type, entry.amount, -1);
-          }
+    function confirmDeleteLedger(refundToWallets) {
+      if (appData.ledgers.length <= 1) return;
+      const targetId = appData.activeLedgerId;
+
+      if (refundToWallets) {
+        const ledgerEntries = appData.entries.filter(e => e.ledgerId === targetId);
+        ledgerEntries.forEach(entry => {
+          applyWalletDelta(entry.walletId, entry.type, entry.amount, true);
         });
       }
 
-      appData.entries = appData.entries.filter(e => e.ledgerId !== appData.activeLedgerId);
-      appData.ledgers = appData.ledgers.filter(l => l.id !== appData.activeLedgerId);
+      appData.entries = appData.entries.filter(e => e.ledgerId !== targetId);
+      appData.ledgers = appData.ledgers.filter(l => l.id !== targetId);
       appData.activeLedgerId = appData.ledgers[0].id;
-      closeDeleteLedgerModal();
+      chartLedgerId = appData.activeLedgerId;
+
       saveData();
+      closeDeleteLedgerModal();
+      renderAll();
     }
 
-    function renderAll() {
-      renderLedgerPage();
-      renderChartPage();
-      renderWalletPage();
+    function applyWalletDelta(walletId, entryType, amount, isRevert = false) {
+      const wallet = appData.wallets.find(w => w.id === walletId);
+      if (!wallet) return;
+      const val = Number(amount) || 0;
+      const sign = isRevert ? -1 : 1;
+
+      if (wallet.isDebt) {
+        if (entryType === 'expense') {
+          wallet.balance += val * sign;
+        } else {
+          wallet.balance -= val * sign;
+        }
+      } else {
+        if (entryType === 'expense') {
+          wallet.balance -= val * sign;
+        } else {
+          wallet.balance += val * sign;
+        }
+      }
     }
 
-    function formatDayHeader(dateStr) {
-      const days = ['週日', '週一', '週二', '週三', '週四', '週五', '週六'];
-      const d = new Date(dateStr + 'T00:00:00');
-      if (isNaN(d)) return dateStr;
-      const mm = String(d.getMonth() + 1).padStart(2, '0');
-      const dd = String(d.getDate()).padStart(2, '0');
-      return `${mm}/${dd}（${days[d.getDay()]}）`;
+    function getCategoryIconSvg(type, catName) {
+      const list = appData.categories[type] || [];
+      const found = list.find(c => c.name === catName);
+      const iconKey = found ? found.icon : 'star';
+      return (ICONS_DB[iconKey] || ICONS_DB.star).svg;
     }
 
-    function renderLedgerPage() {
-      const subEl = document.getElementById('headerSubtitle');
-      subEl.textContent = appData.profile.userName
-        ? `${appData.profile.userName} · 日常收支與帳戶管理`
-        : '日常收支與帳戶管理';
+    function getWalletNameById(id) {
+      const w = appData.wallets.find(item => item.id === id);
+      return w ? w.name : '現金';
+    }
 
-      const tabsEl = document.getElementById('ledgerTabs');
-      tabsEl.innerHTML = appData.ledgers.map(ledger => {
-        const active = ledger.id === appData.activeLedgerId;
-        return `
-          <button onclick="switchLedger('${ledger.id}')" class="shrink-0 text-xs font-bold px-3.5 py-1.5 rounded-full transition ${
-            active
-              ? 'bg-[#7A655E] text-[#FFFDFB] border border-[#7A655E] shadow-2xs'
-              : 'bg-[#FFFDFB] text-[#8C766E] border border-[#E2D5CE] hover:bg-white'
-          }">
-            ${escapeHtml(ledger.name)}
-          </button>
-        `;
-      }).join('');
+    function toggleProductDropdown(entryId) {
+      if (expandedProductEntryIds.has(entryId)) {
+        expandedProductEntryIds.delete(entryId);
+      } else {
+        expandedProductEntryIds.add(entryId);
+      }
+      renderLedgerEntries();
+    }
 
-      const activeLedger = appData.ledgers.find(l => l.id === appData.activeLedgerId) || appData.ledgers[0];
-      document.getElementById('currentLedgerTitle').textContent = activeLedger.name;
-      document.getElementById('deleteLedgerBtn').style.display = appData.ledgers.length > 1 ? 'inline' : 'none';
-
-      const ledgerEntries = appData.entries.filter(e => e.ledgerId === appData.activeLedgerId);
-      const sortedEntries = [...ledgerEntries].sort((a, b) => b.date.localeCompare(a.date));
+    function renderLedgerEntries() {
+      const currentEntries = appData.entries.filter(e => e.ledgerId === appData.activeLedgerId);
 
       let incomeSum = 0;
       let expenseSum = 0;
-      ledgerEntries.forEach(e => {
+      currentEntries.forEach(e => {
         if (e.type === 'income') incomeSum += Number(e.amount);
         else expenseSum += Number(e.amount);
       });
-      const net = incomeSum - expenseSum;
 
-      document.getElementById('totalIncome').textContent = `+NT$${incomeSum.toLocaleString()}`;
-      document.getElementById('totalExpense').textContent = `-NT$${expenseSum.toLocaleString()}`;
-      const netEl = document.getElementById('netBalance');
-      netEl.textContent = `${net < 0 ? '-' : ''}NT$${Math.abs(net).toLocaleString()}`;
-      netEl.className = `text-base font-bold mt-0.5 truncate ${net < 0 ? 'text-[#C97B8E]' : 'text-[#6E8099]'}`;
+      const net = incomeSum - expenseSum;
+      document.getElementById('netBalance').textContent = (net < 0 ? '-NT$' : 'NT$') + Math.abs(net).toLocaleString();
+      document.getElementById('totalIncome').textContent = '+NT$' + incomeSum.toLocaleString();
+      document.getElementById('totalExpense').textContent = '-NT$' + expenseSum.toLocaleString();
 
       const container = document.getElementById('dailyCardsContainer');
-      container.innerHTML = '';
-
-      if (sortedEntries.length === 0) {
+      if (currentEntries.length === 0) {
         container.innerHTML = `
           <div class="kawaii-card rounded-3xl p-8 text-center">
-            <div class="w-12 h-12 mx-auto mb-2.5 rounded-2xl bg-[#FAF5F0] border border-[#E2D5CE] flex items-center justify-center p-1.5">
-              ${CLOUD_LOGO_SVG}
-            </div>
-            <p class="text-[#7A655E] font-bold">「${escapeHtml(activeLedger.name)}」目前沒有紀錄喔</p>
-            <p class="text-xs text-[#A8948C] mt-1">點擊下方「＋ 記一筆帳」開始記錄日常收支吧！</p>
+            <div class="w-12 h-12 mx-auto mb-2 p-2 rounded-2xl bg-[#FAF5F0] border border-[#E2D5CE]">${CLOUD_LOGO_SVG}</div>
+            <p class="text-sm font-bold text-[#8C766E]">「${escapeHtml(document.getElementById('currentLedgerTitle').textContent)}」目前沒有紀錄喔</p>
+            <p class="text-xs text-[#B09C94] mt-1">點擊下方「＋ 記一筆帳」開始記錄日常收支吧！</p>
           </div>`;
         return;
       }
 
       const grouped = {};
-      sortedEntries.forEach(entry => {
-        if (!grouped[entry.date]) grouped[entry.date] = [];
-        grouped[entry.date].push(entry);
+      currentEntries.forEach(item => {
+        if (!grouped[item.date]) grouped[item.date] = [];
+        grouped[item.date].push(item);
       });
 
-      Object.keys(grouped).sort((a, b) => b.localeCompare(a)).forEach(date => {
-        const dayItems = grouped[date];
-        let dayInc = 0;
-        let dayExp = 0;
-        dayItems.forEach(i => {
+      const sortedDates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
+
+      container.innerHTML = sortedDates.map(dateStr => {
+        const items = grouped[dateStr].slice().reverse();
+        let dayInc = 0, dayExp = 0;
+        items.forEach(i => {
           if (i.type === 'income') dayInc += Number(i.amount);
           else dayExp += Number(i.amount);
         });
 
-        let summaryParts = [];
-        if (dayInc > 0) summaryParts.push(`<span class="text-[#7D9468] font-bold">收入:NT$${dayInc.toLocaleString()}</span>`);
-        if (dayExp > 0) summaryParts.push(`<span class="text-[#C97B8E] font-bold">支出:NT$${dayExp.toLocaleString()}</span>`);
+        const rowsHtml = items.map(item => {
+          const isExp = item.type === 'expense';
+          const iconSvg = getCategoryIconSvg(item.type, item.category);
+          const walletName = getWalletNameById(item.walletId);
+          const products = Array.isArray(item.products) ? item.products.filter(p => p && p.trim() !== '') : [];
+          const hasProducts = isExp && products.length > 0;
+          const isExpanded = expandedProductEntryIds.has(item.id);
 
-        const card = document.createElement('section');
-        card.className = 'kawaii-card rounded-3xl p-4 transition';
+          let mainTitle = item.category;
+          let subLineParts = [];
 
-        let itemsHtml = dayItems.map((item, idx) => {
-          const isIncome = item.type === 'income';
-          const iconKey = findCategoryIconKey(item.type, item.category);
-          const wallet = findWalletById(item.walletId);
+          if (isExp && item.store) {
+            mainTitle = item.store;
+            subLineParts.push(item.category);
+            if (item.note) subLineParts.push(item.note);
+          } else {
+            if (item.note) subLineParts.push(item.note);
+          }
 
-          const storeText = item.store || '';
-          const noteText = item.note !== undefined ? item.note : (item.item || '');
-          const productList = !isIncome ? normalizeEntryProducts(item) : [];
-          const hasProducts = productList.length > 0;
-          const isExpanded = expandedEntryIds.has(item.id);
+          const productBadgeHtml = hasProducts ? `
+            <button type="button" onclick="toggleProductDropdown('${item.id}')"
+              class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F5E5B8]/65 hover:bg-[#F5E5B8] border border-[#E5CF93] text-[#7A655E] transition">
+              <span>${products.length}項商品</span>
+              <span class="text-[8px]">${isExpanded ? '▲' : '▼'}</span>
+            </button>` : '';
 
-          const primaryTitle = isIncome
-            ? (noteText || item.category)
-            : (storeText || noteText || item.category);
-
-          const subText = isIncome
-            ? item.category
-            : [item.category, noteText].filter(Boolean).join(' · ');
+          const expandedProductsBox = (hasProducts && isExpanded) ? `
+            <div class="mt-2 ml-13 bg-[#FAF5F0] border border-[#E2D5CE] rounded-2xl px-3 py-2 space-y-1">
+              ${products.map((prod, idx) => `
+                <div class="flex items-center gap-2 text-xs text-[#7A655E]">
+                  <span class="text-[10px] font-bold text-[#A8948C]">商品${idx + 1}</span>
+                  <span class="font-medium">${escapeHtml(prod)}</span>
+                </div>
+              `).join('')}
+            </div>` : '';
 
           return `
-            <div class="py-2.5 ${idx !== dayItems.length - 1 ? 'border-b border-[#F2EAE4]' : ''}">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3 min-w-0">
-                  <div class="w-11 h-11 rounded-2xl flex items-center justify-center p-1.5 shrink-0 border ${
-                    isIncome
-                      ? 'bg-[#F5E5B8]/35 border-[#EAD59B]'
-                      : 'bg-[#FAF5F0] border-[#E2D5CE]'
-                  }">
-                    ${getCatIconSvg(iconKey)}
+            <div class="py-3 first:pt-2.5 last:pb-2.5">
+              <div class="flex items-center justify-between gap-2.5">
+                <div class="flex items-center gap-3 min-w-0 flex-1">
+                  <div class="w-10 h-10 rounded-2xl shrink-0 p-1.5 border ${isExp ? 'bg-[#FFFDFB] border-[#E2D5CE]' : 'bg-[#F5E5B8]/35 border-[#E6D49E]'}">
+                    ${iconSvg}
                   </div>
-                  <div class="min-w-0">
+                  <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-1.5 flex-wrap">
-                      <span class="font-bold text-[#7A655E] text-sm truncate">${escapeHtml(primaryTitle)}</span>
-                      ${wallet ? `<span class="shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EBF0F7] text-[#6E8099] border border-[#D4DFED]">${escapeHtml(wallet.name)}</span>` : ''}
+                      <span class="font-bold text-sm text-[#7A655E] truncate">${escapeHtml(mainTitle)}</span>
+                      <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EBF0F7] text-[#6E8099] shrink-0">
+                        ${escapeHtml(walletName)}
+                      </span>
                     </div>
-                    <div class="flex items-center gap-1.5 mt-0.5">
-                      <span class="text-xs text-[#A8948C] truncate">${escapeHtml(subText)}</span>
-                      ${hasProducts ? `
-                        <button type="button" onclick="toggleExpandEntryProducts('${item.id}')" class="inline-flex items-center gap-0.5 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F5E5B8]/70 text-[#7A655E] border border-[#E5D39E] shrink-0">
-                          <span>${productList.length}項商品</span>
-                          <span>${isExpanded ? '▴' : '▾'}</span>
-                        </button>
-                      ` : ''}
+                    <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
+                      ${subLineParts.length > 0 ? `<span class="text-xs text-[#A8948C] truncate">${escapeHtml(subLineParts.join(' · '))}</span>` : ''}
+                      ${productBadgeHtml}
                     </div>
                   </div>
                 </div>
 
-                <div class="flex items-center gap-2 shrink-0 ml-2">
-                  <div class="text-right">
-                    <div class="font-bold text-sm ${isIncome ? 'text-[#7D9468]' : 'text-[#C97B8E]'}">
-                      ${isIncome ? '+' : '-'}NT$${Number(item.amount).toLocaleString()}
-                    </div>
-                  </div>
-                  <div class="flex flex-col gap-1">
-                    <button onclick="openEntryModal('${item.id}')" class="text-[11px] font-bold text-[#7E8FA6] hover:text-[#5B6D85] px-1">編輯</button>
-                    <button onclick="deleteEntry('${item.id}')" class="text-[11px] text-[#C4B4AE] hover:text-[#C97B8E] px-1">刪除</button>
-                  </div>
+                <div class="flex items-center gap-2.5 shrink-0">
+                  <span class="font-bold text-sm ${isExp ? 'text-[#C97B8E]' : 'text-[#7D9468]'}">
+                    ${isExp ? '-' : '+'}NT$${Number(item.amount).toLocaleString()}
+                  </span>
+                  <button onclick="openEditModal('${item.id}')" class="px-2.5 py-1 rounded-xl bg-[#FAF5F0] hover:bg-[#EBF0F7] border border-[#E2D5CE] text-[11px] font-bold text-[#7E8FA6] active:scale-95">編輯</button>
                 </div>
               </div>
-
-              ${hasProducts && isExpanded ? `
-                <div class="mt-2 ml-14 bg-[#FAF5F0] border border-[#E2D5CE] rounded-2xl px-3 py-2 space-y-1">
-                  ${productList.map((prod, pIdx) => `
-                    <div class="flex items-center gap-2 text-xs text-[#7A655E]">
-                      <span class="text-[10px] font-bold text-[#9A857D]">商品 ${pIdx + 1}</span>
-                      <span class="font-medium">${escapeHtml(prod)}</span>
-                    </div>
-                  `).join('')}
-                </div>
-              ` : ''}
-            </div>
-          `;
+              ${expandedProductsBox}
+            </div>`;
         }).join('');
 
-        card.innerHTML = `
-          <div class="flex items-center justify-between pb-2.5 mb-1 border-b border-dashed border-[#E2D5CE]">
-            <div class="flex items-center gap-1.5">
-              <span class="text-[#7E8FA6] text-xs">▼</span>
-              <span class="font-bold text-sm text-[#7A655E]">${formatDayHeader(date)}</span>
-            </div>
-            <div class="text-right text-xs space-x-2">
-              ${summaryParts.join(' ')}
-            </div>
-          </div>
-          <div>${itemsHtml}</div>
-        `;
-
-        container.appendChild(card);
-      });
-    }
-
-    // --- 圖表分析頁面渲染 ---
-    function setChartType(type) {
-      chartState.type = type;
-      renderChartPage();
-    }
-
-    function setChartGroupBy(groupBy) {
-      chartState.groupBy = groupBy;
-      renderChartPage();
-    }
-
-    function toggleChartAllMonths() {
-      chartState.allTime = !chartState.allTime;
-      renderChartPage();
-    }
-
-    function shiftChartMonth(offset) {
-      if (chartState.allTime) {
-        chartState.allTime = false;
-        renderChartPage();
-        return;
-      }
-      const [y, m] = chartState.month.split('-').map(Number);
-      const d = new Date(y, m - 1 + offset, 1);
-      chartState.month = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-      renderChartPage();
-    }
-
-    function polarToCartesian(cx, cy, r, angleDeg) {
-      const rad = (angleDeg - 90) * Math.PI / 180;
-      return {
-        x: cx + r * Math.cos(rad),
-        y: cy + r * Math.sin(rad)
-      };
-    }
-
-    function createDonutSlicePath(cx, cy, rOuter, rInner, startAngle, endAngle) {
-      if (endAngle - startAngle >= 359.99) {
-        endAngle = startAngle + 359.99;
-      }
-      const p1 = polarToCartesian(cx, cy, rOuter, startAngle);
-      const p2 = polarToCartesian(cx, cy, rOuter, endAngle);
-      const p3 = polarToCartesian(cx, cy, rInner, endAngle);
-      const p4 = polarToCartesian(cx, cy, rInner, startAngle);
-      const largeArc = endAngle - startAngle > 180 ? 1 : 0;
-
-      return [
-        `M ${p1.x} ${p1.y}`,
-        `A ${rOuter} ${rOuter} 0 ${largeArc} 1 ${p2.x} ${p2.y}`,
-        `L ${p3.x} ${p3.y}`,
-        `A ${rInner} ${rInner} 0 ${largeArc} 0 ${p4.x} ${p4.y}`,
-        'Z'
-      ].join(' ');
-    }
-
-    function renderChartPage() {
-      const activeLedger = appData.ledgers.find(l => l.id === appData.activeLedgerId) || appData.ledgers[0];
-      document.getElementById('chartLedgerBadge').textContent = activeLedger.name;
-      document.getElementById('chartMonthLabel').textContent = chartState.allTime
-        ? '全部期間'
-        : chartState.month.replace('-', '/');
-
-      document.getElementById('chartLedgerTabs').innerHTML = appData.ledgers.map(ledger => {
-        const active = ledger.id === appData.activeLedgerId;
         return `
-          <button onclick="switchLedger('${ledger.id}')" class="shrink-0 text-xs font-bold px-3 py-1 rounded-full transition ${
-            active
-              ? 'bg-[#7A655E] text-[#FFFDFB] border border-[#7A655E]'
-              : 'bg-[#FFFDFB] text-[#8C766E] border border-[#E2D5CE]'
-          }">
-            ${escapeHtml(ledger.name)}
-          </button>
-        `;
+          <section class="kawaii-card rounded-3xl p-4">
+            <div class="flex items-center justify-between pb-2.5 mb-1 border-b border-dashed border-[#E2D5CE]">
+              <div class="flex items-center gap-1.5 font-bold text-sm text-[#7A655E]">
+                <span class="text-[#9FB6D4] text-xs">▼</span>
+                <span>${formatDateDisplay(dateStr)}</span>
+              </div>
+              <div class="flex gap-2 text-xs font-bold">
+                ${dayInc > 0 ? `<span class="text-[#7D9468]">收入:NT$${dayInc.toLocaleString()}</span>` : ''}
+                ${dayExp > 0 ? `<span class="text-[#C97B8E]">支出:NT$${dayExp.toLocaleString()}</span>` : ''}
+              </div>
+            </div>
+            <div class="divide-y divide-[#F2EAE4]">${rowsHtml}</div>
+          </section>`;
       }).join('');
+    }
 
-      const btnExp = document.getElementById('btnChartExpense');
-      const btnInc = document.getElementById('btnChartIncome');
-      if (chartState.type === 'expense') {
-        btnExp.className = 'py-1.5 rounded-xl text-xs font-bold bg-[#F2D5DC] text-[#7A655E] transition';
-        btnInc.className = 'py-1.5 rounded-xl text-xs font-bold text-[#9A857D] transition';
-      } else {
-        btnInc.className = 'py-1.5 rounded-xl text-xs font-bold bg-[#F5E5B8] text-[#7A655E] transition';
-        btnExp.className = 'py-1.5 rounded-xl text-xs font-bold text-[#9A857D] transition';
-      }
+    // ==================== 商品明細視窗與店家自動推薦 ====================
+    function openProductsModal() {
+      tempModalProducts = currentEntryProducts.length > 0 ? [...currentEntryProducts] : [''];
+      renderProductInputs();
+      const modal = document.getElementById('productsModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
 
-      const btnCat = document.getElementById('btnGroupCategory');
-      const btnWal = document.getElementById('btnGroupWallet');
-      if (chartState.groupBy === 'category') {
-        btnCat.className = 'px-5 py-1 rounded-full text-xs font-bold bg-[#FFFDFB] text-[#7A655E] shadow-2xs transition';
-        btnWal.className = 'px-5 py-1 rounded-full text-xs font-bold text-[#9A857D] transition';
-      } else {
-        btnWal.className = 'px-5 py-1 rounded-full text-xs font-bold bg-[#FFFDFB] text-[#7A655E] shadow-2xs transition';
-        btnCat.className = 'px-5 py-1 rounded-full text-xs font-bold text-[#9A857D] transition';
-      }
+    function closeProductsModal() {
+      const modal = document.getElementById('productsModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
 
-      const filtered = appData.entries.filter(e => {
-        if (e.ledgerId !== appData.activeLedgerId) return false;
-        if (e.type !== chartState.type) return false;
-        if (!chartState.allTime && !e.date.startsWith(chartState.month)) return false;
-        return true;
-      });
-
-      const total = filtered.reduce((acc, e) => acc + Number(e.amount || 0), 0);
-      const visualArea = document.getElementById('pieChartVisualArea');
-      const listArea = document.getElementById('chartBreakdownList');
-
-      if (total === 0) {
-        visualArea.innerHTML = `
-          <div class="py-10 text-center">
-            <div class="w-12 h-12 mx-auto mb-2 rounded-2xl bg-[#FAF5F0] border border-[#E2D5CE] flex items-center justify-center p-1.5">
-              ${CLOUD_LOGO_SVG}
-            </div>
-            <p class="text-sm font-bold text-[#7A655E]">「${escapeHtml(activeLedger.name)}」此期間尚無${chartState.type === 'expense' ? '支出' : '收入'}紀錄</p>
-            <p class="text-[11px] text-[#A8948C] mt-1">點擊上方「${chartState.allTime ? '全部期間' : chartState.month.replace('-', '/')}」可切換期間篩選</p>
-          </div>
-        `;
-        listArea.innerHTML = '';
-        return;
-      }
-
-      const map = {};
-      filtered.forEach(e => {
-        let key, label, iconSvg;
-        if (chartState.groupBy === 'category') {
-          key = e.category;
-          label = e.category;
-          iconSvg = getCatIconSvg(findCategoryIconKey(e.type, e.category));
-        } else {
-          const w = findWalletById(e.walletId);
-          key = w ? w.id : 'unknown';
-          label = w ? w.name : '未指定帳戶';
-          iconSvg = getWalletIconSvg(w ? w.iconKey : 'cash');
-        }
-        if (!map[key]) map[key] = { key, label, iconSvg, amount: 0 };
-        map[key].amount += Number(e.amount || 0);
-      });
-
-      const slices = Object.values(map)
-        .sort((a, b) => b.amount - a.amount)
-        .map((item, idx) => ({
-          ...item,
-          color: PIE_COLORS[idx % PIE_COLORS.length],
-          percent: Math.round((item.amount / total) * 100),
-          exactRatio: item.amount / total
-        }));
-
-      const size = 280;
-      const cx = size / 2;
-      const cy = size / 2;
-      const rOuter = 94;
-      const rInner = 50;
-      const rIconBadge = 104;
-
-      let currentAngle = 0;
-      let pathsHtml = '';
-      let labelsHtml = '';
-      let badgesHtml = '';
-
-      slices.forEach(slice => {
-        const sweep = slice.exactRatio * 360;
-        const startAngle = currentAngle;
-        const endAngle = currentAngle + sweep;
-        const midAngle = startAngle + sweep / 2;
-        currentAngle = endAngle;
-
-        const d = createDonutSlicePath(cx, cy, rOuter, rInner, startAngle, endAngle);
-        pathsHtml += `<path d="${d}" fill="${slice.color}" stroke="#FFFDFB" stroke-width="2" />`;
-
-        if (slice.percent >= 5) {
-          const pos = polarToCartesian(cx, cy, (rOuter + rInner) / 2, midAngle);
-          labelsHtml += `
-            <text x="${pos.x}" y="${pos.y}" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" dominant-baseline="central">
-              ${slice.percent}%
-            </text>
-          `;
-        }
-
-        if (slice.percent >= 3) {
-          const bPos = polarToCartesian(cx, cy, rIconBadge, midAngle);
-          const leftPct = (bPos.x / size) * 100;
-          const topPct = (bPos.y / size) * 100;
-          badgesHtml += `
-            <div style="left:${leftPct}%; top:${topPct}%; border-color:${slice.color};"
-                 class="absolute -translate-x-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-[#FFFDFB] border-2 shadow-sm p-1 flex items-center justify-center">
-              ${slice.iconSvg}
-            </div>
-          `;
-        }
-      });
-
-      visualArea.innerHTML = `
-        <div class="relative w-[280px] h-[280px] mx-auto select-none">
-          <svg viewBox="0 0 ${size} ${size}" class="w-full h-full">
-            ${pathsHtml}
-            ${labelsHtml}
-          </svg>
-          ${badgesHtml}
-          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <span class="text-[11px] font-bold text-[#9A857D]">${chartState.type === 'expense' ? '總支出' : '總收入'}</span>
-            <span class="text-base font-bold ${chartState.type === 'expense' ? 'text-[#C97B8E]' : 'text-[#7D9468]'} mt-0.5">
-              NT$${total.toLocaleString()}
-            </span>
-          </div>
-        </div>
-      `;
-
-      listArea.innerHTML = slices.map(slice => `
-        <div class="flex items-center justify-between py-3">
-          <div class="flex items-center gap-2.5 min-w-0">
-            <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color:${slice.color};"></span>
-            <div class="w-9 h-9 rounded-xl bg-[#FAF5F0] border border-[#E2D5CE] p-1.5 shrink-0">
-              ${slice.iconSvg}
-            </div>
-            <span class="font-bold text-sm text-[#7A655E] truncate">${escapeHtml(slice.label)}</span>
-          </div>
-
-          <div class="flex items-center gap-4 shrink-0">
-            <span class="text-xs font-bold text-[#8C766E] w-9 text-right">${slice.percent}%</span>
-            <span class="text-sm font-bold text-[#7A655E] w-24 text-right">NT$${slice.amount.toLocaleString()}</span>
-          </div>
+    function renderProductInputs() {
+      const list = document.getElementById('productInputsList');
+      list.innerHTML = tempModalProducts.map((val, idx) => `
+        <div class="flex items-center gap-1.5">
+          <span class="text-[11px] font-bold text-[#9A857D] w-11 shrink-0">商品 ${idx + 1}</span>
+          <input
+            type="text"
+            value="${escapeHtml(val)}"
+            oninput="updateTempProductValue(${idx}, this.value)"
+            class="kawaii-input flex-1 text-xs font-medium px-3 py-2 rounded-xl"
+          />
+          ${tempModalProducts.length > 1 ? `
+            <button type="button" onclick="removeProductInputRow(${idx})" class="w-6 h-6 rounded-full bg-[#F9EAEF] text-[#C97B8E] text-xs font-bold shrink-0">✕</button>
+          ` : ''}
         </div>
       `).join('');
     }
 
-    // --- 錢包頁面渲染 ---
-    function toggleHideBalance() {
-      hideWalletNumbers = !hideWalletNumbers;
-      renderWalletPage();
+    function updateTempProductValue(idx, val) {
+      tempModalProducts[idx] = val;
     }
 
-    function formatMoneyDisplay(val) {
-      if (hideWalletNumbers) return 'NT$****';
-      const num = Number(val) || 0;
-      return `${num < 0 ? '-' : ''}NT$${Math.abs(num).toLocaleString()}`;
+    function addProductInputRow() {
+      tempModalProducts.push('');
+      renderProductInputs();
     }
 
-    function renderWalletPage() {
+    function removeProductInputRow(idx) {
+      tempModalProducts.splice(idx, 1);
+      renderProductInputs();
+    }
+
+    function saveProductsFromModal() {
+      currentEntryProducts = tempModalProducts.map(s => s.trim()).filter(s => s !== '');
+      updateProductsButtonLabel();
+      closeProductsModal();
+    }
+
+    function updateProductsButtonLabel() {
+      const btn = document.getElementById('btnOpenProductsModal');
+      if (currentEntryProducts.length > 0) {
+        btn.textContent = `已填 ${currentEntryProducts.length} 項商品`;
+        btn.classList.remove('bg-[#EBF0F7]', 'text-[#5D708A]');
+        btn.classList.add('bg-[#F5E5B8]', 'text-[#7A655E]', 'border-[#DFC786]');
+      } else {
+        btn.textContent = '＋ 商品明細';
+        btn.classList.remove('bg-[#F5E5B8]', 'text-[#7A655E]', 'border-[#DFC786]');
+        btn.classList.add('bg-[#EBF0F7]', 'text-[#5D708A]');
+      }
+    }
+
+    function getUniqueHistoricalStores() {
+      const map = new Map();
+      for (let i = appData.entries.length - 1; i >= 0; i--) {
+        const e = appData.entries[i];
+        if (e.type === 'expense' && e.store && e.store.trim() !== '') {
+          const key = e.store.trim();
+          if (!map.has(key)) {
+            map.set(key, {
+              store: key,
+              category: e.category,
+              walletId: e.walletId
+            });
+          }
+        }
+      }
+      return Array.from(map.values());
+    }
+
+    function handleStoreInput() {
+      const input = document.getElementById('entryStore');
+      const box = document.getElementById('storeSuggestionsBox');
+      const keyword = input.value.trim().toLowerCase();
+      const stores = getUniqueHistoricalStores();
+
+      const matched = keyword === ''
+        ? stores.slice(0, 6)
+        : stores.filter(s => s.store.toLowerCase().includes(keyword)).slice(0, 6);
+
+      if (matched.length === 0) {
+        box.classList.add('hidden');
+        return;
+      }
+
+      box.innerHTML = matched.map(item => `
+        <button type="button"
+          onmousedown="selectStoreSuggestion('${escapeHtml(item.store).replace(/'/g, "\\'")}', '${escapeHtml(item.category).replace(/'/g, "\\'")}', '${item.walletId}')"
+          class="w-full px-3 py-2 text-left hover:bg-[#EBF0F7]/70 flex items-center justify-between text-xs">
+          <span class="font-bold text-[#7A655E]">${escapeHtml(item.store)}</span>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FAF5F0] border border-[#E2D5CE] text-[#8C766E]">
+            ${escapeHtml(item.category)}
+          </span>
+        </button>
+      `).join('');
+
+      box.classList.remove('hidden');
+    }
+
+    function selectStoreSuggestion(storeName, categoryName, walletId) {
+      document.getElementById('entryStore').value = storeName;
+      document.getElementById('storeSuggestionsBox').classList.add('hidden');
+
+      if (categoryName && appData.categories.expense.some(c => c.name === categoryName)) {
+        document.getElementById('entryCategory').value = categoryName;
+        renderCategoryChips('expense');
+      }
+      if (walletId && appData.wallets.some(w => w.id === walletId)) {
+        document.getElementById('entryWalletId').value = walletId;
+        renderEntryWalletChips();
+      }
+    }
+
+    function hideStoreSuggestionsDelayed() {
+      setTimeout(() => {
+        document.getElementById('storeSuggestionsBox').classList.add('hidden');
+      }, 150);
+    }
+
+    // ==================== 新增 / 編輯收支彈窗 ====================
+    function openEntryModal() {
+      document.getElementById('modalTitle').textContent = '新增一筆帳';
+      document.getElementById('editId').value = '';
+      document.getElementById('entryDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('entryStore').value = '';
+      document.getElementById('entryAmount').value = '';
+      document.getElementById('entryNote').value = '';
+      document.getElementById('storeSuggestionsBox').classList.add('hidden');
+      document.getElementById('btnDeleteEntryInModal').classList.add('hidden');
+
+      currentEntryProducts = [];
+      updateProductsButtonLabel();
+
+      if (!document.getElementById('entryWalletId').value || !appData.wallets.some(w => w.id === document.getElementById('entryWalletId').value)) {
+        document.getElementById('entryWalletId').value = appData.wallets[0].id;
+      }
+
+      setEntryType('expense');
+      renderEntryWalletChips();
+
+      const modal = document.getElementById('entryModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function openEditModal(id) {
+      const item = appData.entries.find(e => e.id === id);
+      if (!item) return;
+
+      document.getElementById('modalTitle').textContent = '編輯紀錄';
+      document.getElementById('editId').value = item.id;
+      document.getElementById('entryDate').value = item.date;
+      document.getElementById('entryStore').value = item.store || '';
+      document.getElementById('entryAmount').value = item.amount;
+      document.getElementById('entryNote').value = item.note || '';
+      document.getElementById('entryWalletId').value = item.walletId || appData.wallets[0].id;
+      document.getElementById('storeSuggestionsBox').classList.add('hidden');
+      document.getElementById('btnDeleteEntryInModal').classList.remove('hidden');
+
+      currentEntryProducts = Array.isArray(item.products) ? [...item.products] : [];
+      updateProductsButtonLabel();
+
+      setEntryType(item.type, item.category);
+      renderEntryWalletChips();
+
+      const modal = document.getElementById('entryModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeEntryModal() {
+      const modal = document.getElementById('entryModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function deleteEntryFromModal() {
+      const id = document.getElementById('editId').value;
+      if (!id) return;
+      deleteEntry(id);
+      closeEntryModal();
+    }
+
+    function renderEntryWalletChips() {
+      const selectedId = document.getElementById('entryWalletId').value;
+      const container = document.getElementById('entryWalletChips');
+      container.innerHTML = appData.wallets.map(w => {
+        const isSel = w.id === selectedId;
+        const iconSvg = (WALLET_ICONS[w.icon] || WALLET_ICONS.cash).svg;
+        return `
+          <button type="button" onclick="selectEntryWallet('${w.id}')"
+            class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-2xl text-xs font-bold border transition ${
+              isSel
+                ? 'bg-[#CFD8E6] border-[#96ABC9] text-[#53647D]'
+                : 'bg-[#FAF5F0] border-[#E2D5CE] text-[#8C766E] hover:bg-white'
+            }">
+            <span class="w-4 h-4 inline-block">${iconSvg}</span>
+            <span>${escapeHtml(w.name)}</span>
+          </button>`;
+      }).join('');
+    }
+
+    function selectEntryWallet(id) {
+      document.getElementById('entryWalletId').value = id;
+      renderEntryWalletChips();
+    }
+
+    function setEntryType(type, preselectCategory = null) {
+      document.getElementById('entryType').value = type;
+      const btnExp = document.getElementById('btnTypeExpense');
+      const btnInc = document.getElementById('btnTypeIncome');
+      const walletLabel = document.getElementById('labelWalletSelect');
+      const storeGroup = document.getElementById('expenseStoreGroup');
+
+      if (type === 'expense') {
+        btnExp.className = 'py-2 rounded-xl font-bold text-sm bg-[#F2D5DC] text-[#7A5660] shadow-2xs';
+        btnInc.className = 'py-2 rounded-xl font-bold text-sm text-[#A8948C]';
+        walletLabel.textContent = '選擇付款錢包（自動扣款）';
+        storeGroup.classList.remove('hidden');
+      } else {
+        btnInc.className = 'py-2 rounded-xl font-bold text-sm bg-[#F5E5B8] text-[#7A655E] shadow-2xs';
+        btnExp.className = 'py-2 rounded-xl font-bold text-sm text-[#A8948C]';
+        walletLabel.textContent = '選擇入帳錢包（自動存入）';
+        storeGroup.classList.add('hidden');
+      }
+
+      const list = appData.categories[type] || [];
+      const selected = preselectCategory || (list[0] ? list[0].name : '');
+      document.getElementById('entryCategory').value = selected;
+      renderCategoryChips(type);
+    }
+
+    function renderCategoryChips(type) {
+      const list = appData.categories[type] || [];
+      const currentSelected = document.getElementById('entryCategory').value;
+      const container = document.getElementById('categoryChips');
+
+      container.innerHTML = list.map(cat => {
+        const isSel = cat.name === currentSelected;
+        const iconSvg = (ICONS_DB[cat.icon] || ICONS_DB.star).svg;
+        return `
+          <button type="button" onclick="selectCategoryChip('${escapeHtml(cat.name)}')"
+            class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-2xl text-xs font-bold border transition ${
+              isSel
+                ? (type === 'expense' ? 'bg-[#F9EAEF] border-[#E0B8C3] text-[#7A5660]' : 'bg-[#F5E5B8]/70 border-[#DFC786] text-[#7A655E]')
+                : 'bg-[#FAF5F0] border-[#E2D5CE] text-[#8C766E] hover:bg-white'
+            }">
+            <span class="w-4 h-4 inline-block">${iconSvg}</span>
+            <span>${escapeHtml(cat.name)}</span>
+          </button>`;
+      }).join('');
+    }
+
+    function selectCategoryChip(name) {
+      document.getElementById('entryCategory').value = name;
+      renderCategoryChips(document.getElementById('entryType').value);
+    }
+
+    function handleEntrySubmit(e) {
+      e.preventDefault();
+      const editId = document.getElementById('editId').value;
+      const type = document.getElementById('entryType').value;
+      const walletId = document.getElementById('entryWalletId').value || appData.wallets[0].id;
+      const category = document.getElementById('entryCategory').value;
+      const date = document.getElementById('entryDate').value;
+      const store = type === 'expense' ? document.getElementById('entryStore').value.trim() : '';
+      const products = type === 'expense' ? currentEntryProducts.filter(s => s && s.trim() !== '') : [];
+      const amount = Number(document.getElementById('entryAmount').value);
+      const note = document.getElementById('entryNote').value.trim();
+
+      if (!category || amount <= 0) return;
+
+      if (editId) {
+        const idx = appData.entries.findIndex(item => item.id === editId);
+        if (idx !== -1) {
+          const oldEntry = appData.entries[idx];
+          applyWalletDelta(oldEntry.walletId, oldEntry.type, oldEntry.amount, true);
+          appData.entries[idx] = {
+            ...oldEntry,
+            type,
+            walletId,
+            category,
+            date,
+            store,
+            products,
+            amount,
+            note
+          };
+          applyWalletDelta(walletId, type, amount, false);
+        }
+      } else {
+        appData.entries.push({
+          id: 'entry_' + Date.now(),
+          ledgerId: appData.activeLedgerId,
+          type,
+          walletId,
+          category,
+          date,
+          store,
+          products,
+          amount,
+          note
+        });
+        applyWalletDelta(walletId, type, amount, false);
+      }
+
+      saveData();
+      closeEntryModal();
+      renderAll();
+    }
+
+    function deleteEntry(id) {
+      const target = appData.entries.find(e => e.id === id);
+      if (!target) return;
+      if (!confirm('確定要刪除這筆紀錄嗎？（錢包餘額會同步自動退回）')) return;
+
+      applyWalletDelta(target.walletId, target.type, target.amount, true);
+      appData.entries = appData.entries.filter(e => e.id !== id);
+      saveData();
+      renderAll();
+    }
+
+    // ==================== 圖表分析邏輯 ====================
+    function renderChartView() {
+      const tabsContainer = document.getElementById('chartLedgerTabs');
+      tabsContainer.innerHTML = appData.ledgers.map(ledger => {
+        const isActive = ledger.id === chartLedgerId;
+        return `
+          <button onclick="selectChartLedger('${ledger.id}')"
+            class="shrink-0 px-3 py-1 rounded-full text-xs font-bold transition ${
+              isActive
+                ? 'bg-[#687A92] text-[#FFFDFB]'
+                : 'bg-[#FFFDFB]/85 text-[#8C766E] border border-[#E2D5CE]'
+            }">
+            ${escapeHtml(ledger.name)}
+          </button>`;
+      }).join('');
+
+      const targetLedger = appData.ledgers.find(l => l.id === chartLedgerId) || appData.ledgers[0];
+      document.getElementById('chartLedgerBadge').textContent = targetLedger.name;
+
+      document.getElementById('chartMonthLabel').textContent =
+        chartMonthFilter === 'ALL' ? '全部期間' : chartMonthFilter.replace('-', '年') + '月';
+
+      const btnExp = document.getElementById('btnChartExpense');
+      const btnInc = document.getElementById('btnChartIncome');
+      if (chartType === 'expense') {
+        btnExp.className = 'py-1.5 rounded-xl text-xs font-bold bg-[#F2D5DC] text-[#7A5660]';
+        btnInc.className = 'py-1.5 rounded-xl text-xs font-bold text-[#A8948C]';
+      } else {
+        btnInc.className = 'py-1.5 rounded-xl text-xs font-bold bg-[#F5E5B8] text-[#7A655E]';
+        btnExp.className = 'py-1.5 rounded-xl text-xs font-bold text-[#A8948C]';
+      }
+
+      const btnCat = document.getElementById('btnGroupCategory');
+      const btnWal = document.getElementById('btnGroupWallet');
+      if (chartGroupBy === 'category') {
+        btnCat.className = 'px-5 py-1 rounded-full text-xs font-bold bg-[#CFD8E6] text-[#53647D]';
+        btnWal.className = 'px-5 py-1 rounded-full text-xs font-bold text-[#9A857D]';
+      } else {
+        btnWal.className = 'px-5 py-1 rounded-full text-xs font-bold bg-[#CFD8E6] text-[#53647D]';
+        btnCat.className = 'px-5 py-1 rounded-full text-xs font-bold text-[#9A857D]';
+      }
+
+      const filtered = appData.entries.filter(e => {
+        if (e.ledgerId !== chartLedgerId) return false;
+        if (e.type !== chartType) return false;
+        if (chartMonthFilter !== 'ALL' && !e.date.startsWith(chartMonthFilter)) return false;
+        return true;
+      });
+
+      const visualArea = document.getElementById('pieChartVisualArea');
+      const listArea = document.getElementById('chartBreakdownList');
+
+      if (filtered.length === 0) {
+        visualArea.innerHTML = `
+          <div class="py-8 text-center">
+            <div class="w-12 h-12 mx-auto mb-2 p-2 rounded-full bg-[#FAF5F0] border border-[#E2D5CE]">${CHART_NAV_SVG}</div>
+            <p class="text-xs font-bold text-[#9A857D]">此期間沒有${chartType === 'expense' ? '支出' : '收入'}紀錄</p>
+          </div>`;
+        listArea.innerHTML = '';
+        return;
+      }
+
+      const aggMap = {};
+      let grandTotal = 0;
+
+      filtered.forEach(e => {
+        const val = Number(e.amount) || 0;
+        grandTotal += val;
+        if (chartGroupBy === 'category') {
+          const key = e.category || '其他';
+          if (!aggMap[key]) aggMap[key] = { name: key, amount: 0, iconSvg: getCategoryIconSvg(e.type, key) };
+          aggMap[key].amount += val;
+        } else {
+          const wObj = appData.wallets.find(w => w.id === e.walletId);
+          const key = wObj ? wObj.name : '現金';
+          const wIcon = wObj ? (WALLET_ICONS[wObj.icon] || WALLET_ICONS.cash).svg : WALLET_ICONS.cash.svg;
+          if (!aggMap[key]) aggMap[key] = { name: key, amount: 0, iconSvg: wIcon };
+          aggMap[key].amount += val;
+        }
+      });
+
+      const items = Object.values(aggMap).sort((a, b) => b.amount - a.amount);
+
+      const cx = 110, cy = 110, outerR = 82, innerR = 48;
+      let startAngle = -Math.PI / 2;
+      let slicesSvg = '';
+
+      items.forEach((item, idx) => {
+        const ratio = item.amount / grandTotal;
+        const color = CHART_PALETTE[idx % CHART_PALETTE.length];
+        const sweep = ratio * Math.PI * 2;
+        const endAngle = startAngle + sweep;
+
+        if (items.length === 1) {
+          slicesSvg += `
+            <circle cx="${cx}" cy="${cy}" r="${(outerR + innerR) / 2}"
+              fill="none" stroke="${color}" stroke-width="${outerR - innerR}" />`;
+        } else {
+          const x1 = cx + outerR * Math.cos(startAngle);
+          const y1 = cy + outerR * Math.sin(startAngle);
+          const x2 = cx + outerR * Math.cos(endAngle);
+          const y2 = cy + outerR * Math.sin(endAngle);
+          const x3 = cx + innerR * Math.cos(endAngle);
+          const y3 = cy + innerR * Math.sin(endAngle);
+          const x4 = cx + innerR * Math.cos(startAngle);
+          const y4 = cy + innerR * Math.sin(startAngle);
+          const largeArc = sweep > Math.PI ? 1 : 0;
+
+          const d = [
+            `M ${x1.toFixed(2)} ${y1.toFixed(2)}`,
+            `A ${outerR} ${outerR} 0 ${largeArc} 1 ${x2.toFixed(2)} ${y2.toFixed(2)}`,
+            `L ${x3.toFixed(2)} ${y3.toFixed(2)}`,
+            `A ${innerR} ${innerR} 0 ${largeArc} 0 ${x4.toFixed(2)} ${y4.toFixed(2)}`,
+            'Z'
+          ].join(' ');
+
+          slicesSvg += `<path d="${d}" fill="${color}" stroke="#FFFDFB" stroke-width="2" />`;
+        }
+        startAngle = endAngle;
+      });
+
+      visualArea.innerHTML = `
+        <div class="relative w-[220px] h-[220px] flex items-center justify-center">
+          <svg viewBox="0 0 220 220" class="w-full h-full">
+            ${slicesSvg}
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none px-4 text-center">
+            <span class="text-[11px] font-bold text-[#9A857D]">${chartType === 'expense' ? '總支出' : '總收入'}</span>
+            <span class="text-base font-bold text-[#7A655E] mt-0.5 truncate max-w-[92px]">$${grandTotal.toLocaleString()}</span>
+          </div>
+        </div>
+      `;
+
+      listArea.innerHTML = items.map((item, idx) => {
+        const pct = ((item.amount / grandTotal) * 100).toFixed(1);
+        const color = CHART_PALETTE[idx % CHART_PALETTE.length];
+        return `
+          <div class="py-3 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5 min-w-0 flex-1">
+              <div class="w-9 h-9 rounded-2xl p-1.5 bg-[#FAF5F0] border border-[#E2D5CE] shrink-0">
+                ${item.iconSvg}
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color:${color}"></span>
+                  <span class="text-sm font-bold text-[#7A655E] truncate">${escapeHtml(item.name)}</span>
+                  <span class="text-xs font-bold text-[#9A857D]">${pct}%</span>
+                </div>
+                <div class="w-full h-1.5 bg-[#FAF5F0] rounded-full mt-1.5 overflow-hidden">
+                  <div class="h-full rounded-full" style="width:${Math.max(4, pct)}%; background-color:${color}"></div>
+                </div>
+              </div>
+            </div>
+            <div class="text-sm font-bold text-[#7A655E] shrink-0">
+              NT$${item.amount.toLocaleString()}
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function selectChartLedger(id) {
+      chartLedgerId = id;
+      renderChartView();
+    }
+
+    function setChartType(type) {
+      chartType = type;
+      renderChartView();
+    }
+
+    function setChartGroupBy(groupBy) {
+      chartGroupBy = groupBy;
+      renderChartView();
+    }
+
+    function toggleChartAllMonths() {
+      if (chartMonthFilter === 'ALL') {
+        const now = new Date();
+        chartMonthFilter = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      } else {
+        chartMonthFilter = 'ALL';
+      }
+      renderChartView();
+    }
+
+    function shiftChartMonth(delta) {
+      if (chartMonthFilter === 'ALL') {
+        const now = new Date();
+        chartMonthFilter = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      } else {
+        const [y, m] = chartMonthFilter.split('-').map(Number);
+        const d = new Date(y, m - 1 + delta, 1);
+        chartMonthFilter = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      }
+      renderChartView();
+    }
+
+    // ==================== 錢包與帳戶邏輯 ====================
+    function renderWallets() {
       let totalAssets = 0;
       let totalDebt = 0;
 
       appData.wallets.forEach(w => {
-        if (w.includeInTotal === false) return;
-        const typeDef = WALLET_TYPE_DEFS.find(t => t.type === w.type);
+        if (!w.includeInTotal) return;
         const bal = Number(w.balance) || 0;
-        if (typeDef && typeDef.isDebt) {
-          totalDebt += Math.abs(bal);
+        if (w.isDebt) {
+          totalDebt += Math.max(0, bal);
         } else {
           if (bal >= 0) totalAssets += bal;
           else totalDebt += Math.abs(bal);
@@ -1607,75 +1641,92 @@
       });
 
       const netWorth = totalAssets - totalDebt;
-      document.getElementById('walletNetWorth').textContent = formatMoneyDisplay(netWorth);
-      document.getElementById('walletTotalAssets').textContent = formatMoneyDisplay(totalAssets);
-      document.getElementById('walletTotalDebt').textContent = formatMoneyDisplay(totalDebt);
+      const fmt = (num) => hideBalances ? '****' : 'NT$' + Number(num).toLocaleString();
+
+      document.getElementById('walletNetWorth').textContent = hideBalances ? '****' : (netWorth < 0 ? '-NT$' : 'NT$') + Math.abs(netWorth).toLocaleString();
+      document.getElementById('walletTotalAssets').textContent = fmt(totalAssets);
+      document.getElementById('walletTotalDebt').textContent = fmt(totalDebt);
+
+      const groupsMap = {};
+      appData.wallets.forEach(w => {
+        const gName = w.group || '其他帳戶';
+        if (!groupsMap[gName]) groupsMap[gName] = [];
+        groupsMap[gName].push(w);
+      });
 
       const container = document.getElementById('walletGroupsContainer');
-      container.innerHTML = '';
+      container.innerHTML = Object.keys(groupsMap).map(groupName => {
+        const list = groupsMap[groupName];
+        let groupSum = 0;
+        list.forEach(w => {
+          const bal = Number(w.balance) || 0;
+          groupSum += w.isDebt ? -bal : bal;
+        });
 
-      WALLET_TYPE_DEFS.forEach(groupDef => {
-        const groupWallets = appData.wallets.filter(w => w.type === groupDef.type);
-        if (groupWallets.length === 0) return;
+        const cardsHtml = list.map(w => {
+          const iconSvg = (WALLET_ICONS[w.icon] || WALLET_ICONS.cash).svg;
+          const bal = Number(w.balance) || 0;
+          const displayBal = hideBalances
+            ? '****'
+            : w.isDebt
+              ? (bal > 0 ? `-NT$${bal.toLocaleString()}` : 'NT$0')
+              : `${bal < 0 ? '-' : ''}NT$${Math.abs(bal).toLocaleString()}`;
 
-        const groupSum = groupWallets.reduce((acc, w) => acc + (Number(w.balance) || 0), 0);
-        const sumLabel = groupDef.isDebt ? '負債' : '資產';
-
-        const card = document.createElement('section');
-        card.className = 'kawaii-card rounded-3xl overflow-hidden';
-
-        const rowsHtml = groupWallets.map((w, idx) => `
-          <div onclick="openEditWalletModal('${w.id}')" class="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-[#FAF5F0]/70 transition ${
-            idx !== groupWallets.length - 1 ? 'border-b border-[#F2EAE4]' : ''
-          }">
-            <div class="flex items-center gap-3 min-w-0">
-              <div class="w-11 h-11 rounded-2xl bg-[#FAF5F0] border border-[#E2D5CE] flex items-center justify-center p-1.5 shrink-0">
-                ${getWalletIconSvg(w.iconKey)}
+          return `
+            <div onclick="openEditWalletModal('${w.id}')" class="py-3 flex items-center justify-between cursor-pointer hover:bg-[#FAF5F0]/60 px-2 rounded-2xl transition">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="w-10 h-10 rounded-2xl p-1.5 bg-[#FFFDFB] border border-[#E2D5CE] shrink-0">
+                  ${iconSvg}
+                </div>
+                <div class="min-w-0">
+                  <div class="font-bold text-sm text-[#7A655E] truncate">${escapeHtml(w.name)}</div>
+                  <div class="text-[11px] text-[#A8948C] truncate">
+                    ${w.note ? escapeHtml(w.note) : (w.isDebt ? '信用卡/負債帳戶' : '可用餘額')}
+                    ${!w.includeInTotal ? ' · 不計入總資產' : ''}
+                  </div>
+                </div>
               </div>
-              <div class="min-w-0">
-                <div class="font-bold text-sm text-[#7A655E] truncate">${escapeHtml(w.name)}</div>
-                ${w.note ? `<div class="text-[11px] text-[#A8948C] truncate">${escapeHtml(w.note)}</div>` : ''}
+              <div class="flex items-center gap-1.5 shrink-0">
+                <span class="font-bold text-sm ${w.isDebt && bal > 0 ? 'text-[#C97B8E]' : 'text-[#5D708A]'}">${displayBal}</span>
+                <span class="text-[#C8B8B0] text-xs">›</span>
               </div>
+            </div>`;
+        }).join('');
+
+        return `
+          <section class="kawaii-card rounded-3xl p-4">
+            <div class="flex items-center justify-between pb-2 mb-1 border-b border-dashed border-[#E2D5CE]">
+              <span class="text-xs font-bold text-[#8C9BB0]">${escapeHtml(groupName)}</span>
+              <span class="text-xs font-bold text-[#7A655E]">
+                ${hideBalances ? '****' : (groupSum < 0 ? '-NT$' : 'NT$') + Math.abs(groupSum).toLocaleString()}
+              </span>
             </div>
-
-            <div class="text-right shrink-0 ml-2">
-              <div class="font-bold text-sm ${groupDef.isDebt && w.balance > 0 ? 'text-[#C97B8E]' : 'text-[#7A655E]'}">
-                ${formatMoneyDisplay(w.balance)}
-              </div>
-              <div class="text-[10px] text-[#B09C94]">TWD(1.0)</div>
-            </div>
-          </div>
-        `).join('');
-
-        card.innerHTML = `
-          <div class="flex items-center justify-between px-4 py-2 bg-[#FAF5F0] border-b border-[#EFE6E0]">
-            <span class="text-xs font-bold text-[#8C766E]">${groupDef.label}</span>
-            <span class="text-xs font-bold text-[#9A857D]">${sumLabel}: ${formatMoneyDisplay(groupSum)}</span>
-          </div>
-          <div>${rowsHtml}</div>
-        `;
-
-        container.appendChild(card);
-      });
+            <div class="divide-y divide-[#F2EAE4]">${cardsHtml}</div>
+          </section>`;
+      }).join('');
     }
 
-    // --- 新建 / 編輯錢包流程 ---
+    function toggleHideBalance() {
+      hideBalances = !hideBalances;
+      renderWallets();
+    }
+
     function openNewWalletTypeModal() {
-      const listEl = document.getElementById('walletTypeList');
-      listEl.innerHTML = WALLET_TYPE_DEFS.map(def => `
-        <button type="button" onclick="openCreateWalletForm('${def.type}')" class="w-full flex items-center justify-between p-3.5 text-left hover:bg-[#FAF5F0] transition">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-2xl bg-[#FAF5F0] border border-[#E2D5CE] flex items-center justify-center p-1.5 shrink-0">
-              ${getWalletIconSvg(def.defaultIcon)}
+      const list = document.getElementById('walletTypeList');
+      list.innerHTML = WALLET_TYPE_PRESETS.map(p => {
+        const iconSvg = (WALLET_ICONS[p.icon] || WALLET_ICONS.cash).svg;
+        return `
+          <button type="button" onclick="openCreateWalletForm('${p.type}')" class="w-full p-3 flex items-center justify-between hover:bg-[#FAF5F0] text-left transition">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-2xl p-1.5 bg-[#FAF5F0] border border-[#E2D5CE]">${iconSvg}</div>
+              <div>
+                <div class="text-sm font-bold text-[#7A655E]">${p.name}</div>
+                <div class="text-[11px] text-[#A8948C]">${p.desc}</div>
+              </div>
             </div>
-            <div>
-              <div class="font-bold text-sm text-[#7A655E]">${def.label}</div>
-              <div class="text-[11px] text-[#A8948C]">${def.desc}</div>
-            </div>
-          </div>
-          <span class="text-[#B09C94] font-bold">›</span>
-        </button>
-      `).join('');
+            <span class="text-[#B09C94] font-bold">›</span>
+          </button>`;
+      }).join('');
 
       const modal = document.getElementById('walletTypeModal');
       modal.classList.remove('hidden');
@@ -1688,69 +1739,47 @@
       modal.classList.remove('flex');
     }
 
-    function renderWalletIconPicker(selectedKey) {
-      const container = document.getElementById('walletIconPicker');
-      container.innerHTML = Object.entries(WALLET_ICONS).map(([key, item]) => {
-        const active = key === selectedKey;
-        return `
-          <button type="button" onclick="pickWalletIcon('${key}')" class="flex flex-col items-center p-1.5 rounded-xl border transition ${
-            active ? 'bg-[#EBF0F7] border-[#9FB6D4]' : 'bg-white border-[#E2D5CE]'
-          }">
-            <div class="w-7 h-7">${item.svg}</div>
-          </button>
-        `;
-      }).join('');
-    }
-
-    function pickWalletIcon(key) {
-      document.getElementById('selectedWalletIcon').value = key;
-      renderWalletIconPicker(key);
-    }
-
-    function openCreateWalletForm(type) {
+    function openCreateWalletForm(presetType) {
       closeWalletTypeModal();
-      const def = WALLET_TYPE_DEFS.find(d => d.type === type) || WALLET_TYPE_DEFS[0];
+      const preset = WALLET_TYPE_PRESETS.find(p => p.type === presetType) || WALLET_TYPE_PRESETS[0];
 
-      document.getElementById('walletFormTitle').textContent = `新增 ${def.label}`;
-      document.getElementById('walletTypeBadge').textContent = def.label;
       document.getElementById('editWalletId').value = '';
-      document.getElementById('walletCategoryType').value = def.type;
-      document.getElementById('walletName').value = '';
-      document.getElementById('walletBalance').value = '';
-      document.getElementById('walletAmountLabel').textContent = def.isDebt ? '目前負債金額 (NT$)' : '目前餘額 (NT$)';
+      document.getElementById('walletCategoryType').value = preset.type;
+      document.getElementById('walletFormTitle').textContent = `新增 ${preset.name.split(' ')[0]}`;
+      document.getElementById('walletTypeBadge').textContent = preset.group;
+      document.getElementById('walletName').value = preset.name.split(' ')[0];
+      document.getElementById('walletBalance').value = 0;
+      document.getElementById('walletAmountLabel').textContent = preset.isDebt ? '目前待還款金額 (NT$)' : '目前餘額 (NT$)';
       document.getElementById('walletIncludeTotal').checked = true;
       document.getElementById('walletNote').value = '';
       document.getElementById('btnDeleteWallet').classList.add('hidden');
 
-      document.getElementById('selectedWalletIcon').value = def.defaultIcon;
-      renderWalletIconPicker(def.defaultIcon);
+      selectWalletIcon(preset.icon);
 
       const modal = document.getElementById('walletFormModal');
       modal.classList.remove('hidden');
       modal.classList.add('flex');
     }
 
-    function openEditWalletModal(walletId) {
-      const wallet = appData.wallets.find(w => w.id === walletId);
-      if (!wallet) return;
-      const def = WALLET_TYPE_DEFS.find(d => d.type === wallet.type) || WALLET_TYPE_DEFS[0];
+    function openEditWalletModal(id) {
+      const w = appData.wallets.find(item => item.id === id);
+      if (!w) return;
 
-      document.getElementById('walletFormTitle').textContent = `編輯帳戶`;
-      document.getElementById('walletTypeBadge').textContent = def.label;
-      document.getElementById('editWalletId').value = wallet.id;
-      document.getElementById('walletCategoryType').value = wallet.type;
-      document.getElementById('walletName').value = wallet.name;
-      document.getElementById('walletBalance').value = wallet.balance;
-      document.getElementById('walletAmountLabel').textContent = def.isDebt ? '目前負債金額 (NT$)' : '目前餘額 (NT$)';
-      document.getElementById('walletIncludeTotal').checked = wallet.includeInTotal !== false;
-      document.getElementById('walletNote').value = wallet.note || '';
+      document.getElementById('editWalletId').value = w.id;
+      document.getElementById('walletCategoryType').value = w.type;
+      document.getElementById('walletFormTitle').textContent = '編輯帳戶';
+      document.getElementById('walletTypeBadge').textContent = w.group || '帳戶';
+      document.getElementById('walletName').value = w.name;
+      document.getElementById('walletBalance').value = w.balance;
+      document.getElementById('walletAmountLabel').textContent = w.isDebt ? '目前待還款金額 (NT$)' : '目前餘額 (NT$)';
+      document.getElementById('walletIncludeTotal').checked = w.includeInTotal !== false;
+      document.getElementById('walletNote').value = w.note || '';
 
       const delBtn = document.getElementById('btnDeleteWallet');
       if (appData.wallets.length > 1) delBtn.classList.remove('hidden');
       else delBtn.classList.add('hidden');
 
-      document.getElementById('selectedWalletIcon').value = wallet.iconKey || def.defaultIcon;
-      renderWalletIconPicker(wallet.iconKey || def.defaultIcon);
+      selectWalletIcon(w.icon || 'cash');
 
       const modal = document.getElementById('walletFormModal');
       modal.classList.remove('hidden');
@@ -1763,28 +1792,57 @@
       modal.classList.remove('flex');
     }
 
+    function selectWalletIcon(iconKey) {
+      document.getElementById('selectedWalletIcon').value = iconKey;
+      const container = document.getElementById('walletIconPicker');
+      container.innerHTML = Object.keys(WALLET_ICONS).map(key => {
+        const isSel = key === iconKey;
+        return `
+          <button type="button" onclick="selectWalletIcon('${key}')"
+            class="flex flex-col items-center p-1.5 rounded-xl border transition ${
+              isSel ? 'bg-[#EBF0F7] border-[#96ABC9]' : 'bg-white border-[#E2D5CE]'
+            }">
+            <div class="w-6 h-6">${WALLET_ICONS[key].svg}</div>
+            <span class="text-[9px] font-bold text-[#8C766E] mt-0.5">${WALLET_ICONS[key].label}</span>
+          </button>`;
+      }).join('');
+    }
+
     function handleWalletFormSubmit(e) {
       e.preventDefault();
-      const id = document.getElementById('editWalletId').value;
-      const type = document.getElementById('walletCategoryType').value;
+      const editId = document.getElementById('editWalletId').value;
+      const presetType = document.getElementById('walletCategoryType').value;
+      const preset = WALLET_TYPE_PRESETS.find(p => p.type === presetType) || WALLET_TYPE_PRESETS[0];
+
       const name = document.getElementById('walletName').value.trim();
       const balance = Number(document.getElementById('walletBalance').value) || 0;
-      const iconKey = document.getElementById('selectedWalletIcon').value || 'cash';
+      const icon = document.getElementById('selectedWalletIcon').value;
       const includeInTotal = document.getElementById('walletIncludeTotal').checked;
       const note = document.getElementById('walletNote').value.trim();
 
-      if (id) {
-        const idx = appData.wallets.findIndex(w => w.id === id);
-        if (idx > -1) {
-          appData.wallets[idx] = { ...appData.wallets[idx], name, balance, iconKey, includeInTotal, note };
+      if (!name) return;
+
+      if (editId) {
+        const idx = appData.wallets.findIndex(w => w.id === editId);
+        if (idx !== -1) {
+          appData.wallets[idx] = {
+            ...appData.wallets[idx],
+            name,
+            balance,
+            icon,
+            includeInTotal,
+            note
+          };
         }
       } else {
         appData.wallets.push({
-          id: 'w_' + Date.now(),
+          id: 'wallet_' + Date.now(),
           name,
-          type,
+          type: preset.type,
+          group: preset.group,
           balance,
-          iconKey,
+          icon,
+          isDebt: preset.isDebt,
           includeInTotal,
           note
         });
@@ -1792,216 +1850,32 @@
 
       saveData();
       closeWalletFormModal();
+      renderAll();
     }
 
     function deleteWallet() {
-      const id = document.getElementById('editWalletId').value;
-      if (!id || appData.wallets.length <= 1) return;
-      if (confirm('確定要刪除此錢包帳戶嗎？')) {
-        appData.wallets = appData.wallets.filter(w => w.id !== id);
-        saveData();
-        closeWalletFormModal();
-      }
-    }
+      const editId = document.getElementById('editWalletId').value;
+      if (!editId || appData.wallets.length <= 1) return;
+      if (!confirm('確定要刪除此帳戶嗎？原本關聯的紀錄將自動轉移到第一個預設帳戶。')) return;
 
-    // --- 記一筆帳 ---
-    function setEntryType(type, selectedCat = null) {
-      document.getElementById('entryType').value = type;
-      const btnExp = document.getElementById('btnTypeExpense');
-      const btnInc = document.getElementById('btnTypeIncome');
-      const expenseStoreGroup = document.getElementById('expenseStoreGroup');
-      const boxEl = document.getElementById('storeSuggestionsBox');
-
-      if (boxEl) boxEl.classList.add('hidden');
-
-      if (type === 'expense') {
-        btnExp.className = 'py-2 rounded-xl font-bold text-sm bg-[#F2D5DC] text-[#7A655E] border border-[#E5BEC7] transition';
-        btnInc.className = 'py-2 rounded-xl font-bold text-sm text-[#9A857D] transition';
-        document.getElementById('labelWalletSelect').textContent = '選擇付款錢包（自動扣款）';
-        expenseStoreGroup.classList.remove('hidden');
-      } else {
-        btnInc.className = 'py-2 rounded-xl font-bold text-sm bg-[#F5E5B8] text-[#7A655E] border border-[#E6D198] transition';
-        btnExp.className = 'py-2 rounded-xl font-bold text-sm text-[#9A857D] transition';
-        document.getElementById('labelWalletSelect').textContent = '選擇入帳錢包（自動增加餘額）';
-        expenseStoreGroup.classList.add('hidden');
-      }
-
-      renderCategoryChips(type, selectedCat);
-    }
-
-    function renderEntryWalletChips(selectedWalletId = null) {
-      const container = document.getElementById('entryWalletChips');
-      const hiddenInput = document.getElementById('entryWalletId');
-
-      const activeId = selectedWalletId && appData.wallets.some(w => w.id === selectedWalletId)
-        ? selectedWalletId
-        : (appData.wallets[0] ? appData.wallets[0].id : '');
-      hiddenInput.value = activeId;
-
-      container.innerHTML = appData.wallets.map(w => {
-        const isSelected = w.id === activeId;
-        return `
-          <button type="button" onclick="selectEntryWallet('${w.id}')" class="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1.5 rounded-full border transition ${
-            isSelected
-              ? 'bg-[#EBF0F7] border-[#9FB6D4] text-[#5D708A]'
-              : 'bg-[#FAF5F0] border-[#E2D5CE] text-[#9A857D] hover:bg-white'
-          }">
-            <span class="w-4 h-4 inline-block">${getWalletIconSvg(w.iconKey)}</span>
-            <span>${escapeHtml(w.name)}</span>
-          </button>
-        `;
-      }).join('');
-    }
-
-    function selectEntryWallet(walletId) {
-      renderEntryWalletChips(walletId);
-    }
-
-    function renderCategoryChips(type, selectedCat = null) {
-      const list = appData.categories[type] || [];
-      const chipsEl = document.getElementById('categoryChips');
-      const hiddenInput = document.getElementById('entryCategory');
-
-      const activeCat = selectedCat && list.some(c => c.name === selectedCat)
-        ? selectedCat
-        : (list[0] ? list[0].name : '其他');
-      hiddenInput.value = activeCat;
-
-      chipsEl.innerHTML = list.map(cat => {
-        const isSelected = cat.name === activeCat;
-        return `
-          <button type="button" onclick="selectCategory('${escapeHtml(cat.name)}')" class="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1.5 rounded-full border transition ${
-            isSelected
-              ? (type === 'expense'
-                  ? 'bg-[#F9EAEF] border-[#E5BEC7] text-[#7A655E]'
-                  : 'bg-[#F5E5B8]/65 border-[#DFC786] text-[#7A655E]')
-              : 'bg-[#FAF5F0] border-[#E2D5CE] text-[#9A857D] hover:bg-white'
-          }">
-            <span class="w-4 h-4 inline-block">${getCatIconSvg(cat.iconKey)}</span>
-            <span>${escapeHtml(cat.name)}</span>
-          </button>
-        `;
-      }).join('');
-    }
-
-    function selectCategory(catName) {
-      const type = document.getElementById('entryType').value;
-      renderCategoryChips(type, catName);
-    }
-
-    function openEntryModal(id = null) {
-      const modal = document.getElementById('entryModal');
-      const title = document.getElementById('modalTitle');
-      if (id) {
-        const target = appData.entries.find(e => e.id === id);
-        if (!target) return;
-        title.textContent = '編輯紀錄';
-        document.getElementById('editId').value = target.id;
-        document.getElementById('entryDate').value = target.date;
-        document.getElementById('entryStore').value = target.store || '';
-        currentProductList = normalizeEntryProducts(target);
-        updateProductBtnBadge();
-        document.getElementById('entryNote').value = target.note !== undefined ? target.note : (target.item || '');
-        document.getElementById('entryAmount').value = target.amount;
-        renderEntryWalletChips(target.walletId);
-        setEntryType(target.type || 'expense', target.category);
-      } else {
-        title.textContent = '新增一筆帳';
-        document.getElementById('editId').value = '';
-        document.getElementById('entryDate').value = new Date().toISOString().split('T')[0];
-        document.getElementById('entryStore').value = '';
-        currentProductList = [];
-        updateProductBtnBadge();
-        document.getElementById('entryNote').value = '';
-        document.getElementById('entryAmount').value = '';
-        renderEntryWalletChips();
-        setEntryType('expense');
-      }
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-
-    function closeEntryModal() {
-      const modal = document.getElementById('entryModal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    }
-
-    function applyWalletDelta(walletId, type, amount, direction = 1) {
-      const wallet = appData.wallets.find(w => w.id === walletId);
-      if (!wallet) return;
-      const typeDef = WALLET_TYPE_DEFS.find(t => t.type === wallet.type);
-      const val = Number(amount) || 0;
-
-      if (typeDef && typeDef.isDebt) {
-        const delta = type === 'expense' ? val : -val;
-        wallet.balance = (Number(wallet.balance) || 0) + delta * direction;
-      } else {
-        const delta = type === 'income' ? val : -val;
-        wallet.balance = (Number(wallet.balance) || 0) + delta * direction;
-      }
-    }
-
-    function handleEntrySubmit(e) {
-      e.preventDefault();
-      const id = document.getElementById('editId').value;
-      const type = document.getElementById('entryType').value;
-      const walletId = document.getElementById('entryWalletId').value;
-      const category = document.getElementById('entryCategory').value;
-      const date = document.getElementById('entryDate').value;
-      const store = type === 'expense' ? document.getElementById('entryStore').value.trim() : '';
-      const productList = type === 'expense' ? [...currentProductList] : [];
-      const note = document.getElementById('entryNote').value.trim();
-      const amount = Number(document.getElementById('entryAmount').value);
-
-      if (id) {
-        const idx = appData.entries.findIndex(entry => entry.id === id);
-        if (idx > -1) {
-          const old = appData.entries[idx];
-          if (old.walletId) applyWalletDelta(old.walletId, old.type, old.amount, -1);
-          applyWalletDelta(walletId, type, amount, 1);
-
-          appData.entries[idx] = {
-            ...old,
-            type, walletId, category, date, store, productList, note, amount
-          };
-        }
-      } else {
-        applyWalletDelta(walletId, type, amount, 1);
-        appData.entries.push({
-          id: Date.now().toString(),
-          ledgerId: appData.activeLedgerId,
-          walletId,
-          type,
-          category,
-          date,
-          store,
-          productList,
-          note,
-          amount
-        });
-      }
-
+      const fallbackId = appData.wallets.find(w => w.id !== editId).id;
+      appData.entries.forEach(e => {
+        if (e.walletId === editId) e.walletId = fallbackId;
+      });
+      appData.wallets = appData.wallets.filter(w => w.id !== editId);
       saveData();
-      closeEntryModal();
+      closeWalletFormModal();
+      renderAll();
     }
 
-    function deleteEntry(id) {
-      const target = appData.entries.find(e => e.id === id);
-      if (!target) return;
-      if (confirm('確定要刪除這筆紀錄嗎？（錢包餘額會自動回沖）')) {
-        if (target.walletId) applyWalletDelta(target.walletId, target.type, target.amount, -1);
-        appData.entries = appData.entries.filter(e => e.id !== id);
-        saveData();
-      }
-    }
-
-    // --- 帳號設置、備份還原與重置 ---
+    // ==================== 帳號備份、匯入還原與刪除重置 ====================
     function openBackupModal() {
-      document.getElementById('profileUserName').value = appData.profile.userName || '';
-      document.getElementById('lastBackupStatus').textContent = appData.profile.lastBackup
-        ? `上次備份時間：${appData.profile.lastBackup}`
-        : '上次備份時間：尚未備份（建議定期備份以防換機遺失）';
+      document.getElementById('profileUserName').value = appData.userProfile?.name || '';
+      const status = document.getElementById('lastBackupStatus');
+      status.textContent = appData.userProfile?.lastBackupAt
+        ? `上次備份時間：${appData.userProfile.lastBackupAt}`
+        : '上次備份時間：尚未備份（建議定期備份至雲端）';
+
       const modal = document.getElementById('backupModal');
       modal.classList.remove('hidden');
       modal.classList.add('flex');
@@ -2015,57 +1889,80 @@
 
     function saveUserProfile() {
       const name = document.getElementById('profileUserName').value.trim();
-      appData.profile.userName = name;
+      if (!appData.userProfile) appData.userProfile = {};
+      appData.userProfile.name = name;
       saveData();
+      updateUserHeader();
       alert('個人帳號名稱已儲存！');
     }
 
     function clearAccountNameOnly() {
-      if (!appData.profile.userName) {
-        alert('目前尚未設定個人帳號名稱喔！');
+      if (!appData.userProfile || !appData.userProfile.name) {
+        alert('目前尚未設定個人帳號名稱。');
         return;
       }
-      if (confirm('確定要清除個人帳號名稱嗎？（不會刪除你的帳本與錢包資料）')) {
-        appData.profile.userName = '';
-        document.getElementById('profileUserName').value = '';
-        saveData();
-        alert('已清除帳號名稱！');
-      }
+      if (!confirm('確定要清除個人帳號名稱嗎？（不會刪除你的帳本與記帳紀錄）')) return;
+      appData.userProfile.name = '';
+      document.getElementById('profileUserName').value = '';
+      saveData();
+      updateUserHeader();
+      alert('已清除個人帳號名稱！');
     }
 
     function resetAllAccountData() {
-      if (!confirm('⚠️ 警告：此動作會刪除所有帳本、收支明細、錢包帳戶與帳號設定，並恢復成全新空白狀態，無法復原！\n\n確定要刪除帳號並全部重置嗎？')) {
+      const check1 = confirm('⚠️ 警告：確定要「刪除帳號並重置全部資料」嗎？\n這將會清空所有帳本、收支明細、錢包餘額、自訂類別與個人帳號名稱！');
+      if (!check1) return;
+
+      const check2 = prompt('為避免誤按，請輸入「刪除」兩個字以確認清空所有資料：');
+      if (check2 !== '刪除') {
+        alert('輸入不符，已取消刪除操作。');
         return;
       }
-      if (!confirm('請再次確認：真的要清空全部資料並重新開始嗎？')) {
-        return;
-      }
-      localStorage.removeItem('cinna_wallet_v5');
-      appData = createInitialDefaultData();
-      expandedEntryIds.clear();
-      currentProductList = [];
+
+      localStorage.removeItem(STORAGE_KEY);
+      OLD_KEYS.forEach(k => localStorage.removeItem(k));
+
+      appData = {
+        userProfile: { name: '', lastBackupAt: '' },
+        ledgers: [{ id: 'ledger_default', name: '帳本1' }],
+        activeLedgerId: 'ledger_default',
+        wallets: [
+          { id: 'wallet_cash_default', name: '現金', type: 'cash', group: '現金', balance: 0, icon: 'cash', isDebt: false, includeInTotal: true, note: '預設錢包' }
+        ],
+        entries: [],
+        categories: {
+          expense: [...DEFAULT_EXPENSE_CATS],
+          income: [...DEFAULT_INCOME_CATS]
+        }
+      };
+
+      chartLedgerId = 'ledger_default';
       saveData();
       closeBackupModal();
-      alert('已刪除帳號並完成全部重置！');
-    }
-
-    function markBackupNow() {
-      const now = new Date();
-      const stamp = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-      appData.profile.lastBackup = stamp;
-      saveData();
-      document.getElementById('lastBackupStatus').textContent = `上次備份時間：${stamp}`;
+      renderAll();
+      alert('帳號與所有資料已完全重置為初始狀態！');
     }
 
     function downloadFullBackup() {
-      markBackupNow();
-      const jsonStr = JSON.stringify(appData, null, 2);
-      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const nowStr = new Date().toLocaleString('zh-TW');
+      if (!appData.userProfile) appData.userProfile = {};
+      appData.userProfile.lastBackupAt = nowStr;
+      saveData();
+      document.getElementById('lastBackupStatus').textContent = `上次備份時間：${nowStr}`;
+
+      const payload = {
+        app: 'KawaiiCloudLedger',
+        version: 4,
+        exportedAt: nowStr,
+        data: appData
+      };
+
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      const prefix = appData.profile.userName || '記帳本';
+      const userPrefix = appData.userProfile.name ? `${appData.userProfile.name}_` : '';
       a.href = url;
-      a.download = `${prefix}_完整備份_${new Date().toISOString().split('T')[0]}.json`;
+      a.download = `${userPrefix}記帳本完整備份_${new Date().toISOString().split('T')[0]}.json`;
       a.click();
       URL.revokeObjectURL(url);
     }
@@ -2073,99 +1970,67 @@
     function importFullBackup(event) {
       const file = event.target.files[0];
       if (!file) return;
+
       const reader = new FileReader();
       reader.onload = function(e) {
         try {
           const parsed = JSON.parse(e.target.result);
-          if (!parsed.ledgers || !parsed.entries) {
-            alert('這不是有效的記帳本備份檔喔！');
+          const restored = parsed.data ? parsed.data : parsed;
+          if (!restored.ledgers || !restored.wallets) {
+            alert('這不是有效的記帳本備份檔案喔！');
             return;
           }
-          if (confirm('匯入備份檔將會覆蓋目前的資料，確定要還原嗎？')) {
-            appData = parsed;
-            if (!appData.wallets) appData.wallets = createInitialDefaultData().wallets;
-            if (!appData.profile) appData.profile = { userName: '', lastBackup: '' };
-            saveData();
-            closeBackupModal();
-            alert('資料已 100% 還原成功！');
-          }
+          if (!confirm('匯入還原檔將會覆蓋目前的本機資料，確定要還原嗎？')) return;
+          appData = restored;
+          chartLedgerId = appData.activeLedgerId;
+          saveData();
+          renderAll();
+          closeBackupModal();
+          alert('資料已 100% 還原成功！');
         } catch (err) {
-          alert('檔案讀取失敗，請確認檔案是否完整。');
+          alert('檔案讀取失敗，請確認選擇正確的 .json 備份檔。');
         }
       };
       reader.readAsText(file);
+      event.target.value = '';
     }
 
     function copySyncCode() {
-      markBackupNow();
       const jsonStr = JSON.stringify(appData);
-      const code = btoa(unescape(encodeURIComponent(jsonStr)));
-      navigator.clipboard.writeText(code).then(() => {
-        alert('已複製全部備份碼！請貼到 LINE 記事本或備忘錄保存，換手機時點「貼上備份碼還原」即可。');
-      }).catch(() => {
-        prompt('請手動全選並複製以下備份碼：', code);
-      });
-    }
-
-    function restoreFromSyncCode() {
-      const code = prompt('請貼上你之前保存的備份碼：');
-      if (!code || !code.trim()) return;
-      try {
-        const jsonStr = decodeURIComponent(escape(atob(code.trim())));
-        const parsed = JSON.parse(jsonStr);
-        if (!parsed.ledgers || !parsed.entries) {
-          alert('備份碼格式不正確！');
-          return;
-        }
-        appData = parsed;
-        if (!appData.wallets) appData.wallets = createInitialDefaultData().wallets;
-        if (!appData.profile) appData.profile = { userName: '', lastBackup: '' };
-        saveData();
-        closeBackupModal();
-        alert('備份碼還原成功！');
-      } catch (e) {
-        alert('備份碼無效或已損毀，請確認是否完整複製。');
+      const encoded = btoa(encodeURIComponent(jsonStr));
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(encoded).then(() => {
+          alert('已複製「全部備份碼」！你可以貼到 LINE 記事本或傳給自己保存，換手機時點「貼上備份碼還原」即可。');
+        }).catch(() => {
+          prompt('請全選複製以下備份碼保存：', encoded);
+        });
+      } else {
+        prompt('請全選複製以下備份碼保存：', encoded);
       }
     }
 
-    // --- 類別管理 ---
-    function renderIconPicker() {
-      const currentKey = document.getElementById('selectedIconKey').value;
-      const container = document.getElementById('iconPickerContainer');
-      const groups = {};
-      Object.entries(PRACTICAL_ICONS).forEach(([key, data]) => {
-        if (!groups[data.group]) groups[data.group] = [];
-        groups[data.group].push({ key, ...data });
-      });
-
-      container.innerHTML = Object.entries(groups).map(([groupName, items]) => `
-        <div>
-          <div class="text-[10px] font-bold text-[#A8948C] bg-[#F2EAE4]/70 px-2 py-0.5 rounded-md mb-1.5">${groupName}</div>
-          <div class="grid grid-cols-4 gap-1.5">
-            ${items.map(item => {
-              const selected = item.key === currentKey;
-              return `
-                <button type="button" onclick="pickIcon('${item.key}')" class="flex flex-col items-center p-1.5 rounded-2xl border transition ${
-                  selected ? 'bg-[#EBF0F7] border-[#9FB6D4]' : 'bg-[#FFFDFB] border-[#E2D5CE]'
-                }">
-                  <div class="w-7 h-7">${item.svg}</div>
-                  <span class="text-[10px] text-[#8C766E] mt-0.5 truncate w-full text-center">${item.label}</span>
-                </button>
-              `;
-            }).join('')}
-          </div>
-        </div>
-      `).join('');
+    function restoreFromSyncCode() {
+      const code = prompt('請貼上你先前保存的備份碼：');
+      if (!code || !code.trim()) return;
+      try {
+        const jsonStr = decodeURIComponent(atob(code.trim()));
+        const restored = JSON.parse(jsonStr);
+        if (!restored.ledgers || !restored.wallets) throw new Error('Invalid');
+        appData = restored;
+        chartLedgerId = appData.activeLedgerId;
+        saveData();
+        renderAll();
+        closeBackupModal();
+        alert('備份碼還原成功！所有帳本、錢包與紀錄已恢復。');
+      } catch (e) {
+        alert('備份碼格式不正確，請確認是否完整複製沒有漏字喔！');
+      }
     }
 
-    function pickIcon(key) {
-      document.getElementById('selectedIconKey').value = key;
-      renderIconPicker();
-    }
-
+    // ==================== 自訂類別與圖示管理 ====================
     function openCategoryManager() {
       renderIconPicker();
-      renderCategoryManagerList();
+      renderManageCategories();
       const modal = document.getElementById('categoryModal');
       modal.classList.remove('hidden');
       modal.classList.add('flex');
@@ -2175,74 +2040,134 @@
       const modal = document.getElementById('categoryModal');
       modal.classList.add('hidden');
       modal.classList.remove('flex');
-      renderCategoryChips(document.getElementById('entryType').value);
+      if (!document.getElementById('entryModal').classList.contains('hidden')) {
+        renderCategoryChips(document.getElementById('entryType').value);
+      }
     }
 
-    function renderCategoryManagerList() {
+    function renderIconPicker() {
+      const currentKey = document.getElementById('selectedIconKey').value;
+      const container = document.getElementById('iconPickerContainer');
+
+      const groups = {};
+      Object.keys(ICONS_DB).forEach(key => {
+        const g = ICONS_DB[key].group;
+        if (!groups[g]) groups[g] = [];
+        groups[g].push({ key, ...ICONS_DB[key] });
+      });
+
+      container.innerHTML = Object.keys(groups).map(groupName => `
+        <div>
+          <div class="text-[10px] font-bold text-[#9A857D] mb-1">${groupName}</div>
+          <div class="grid grid-cols-5 gap-1.5">
+            ${groups[groupName].map(item => {
+              const isSel = item.key === currentKey;
+              return `
+                <button type="button" onclick="selectIconKey('${item.key}')"
+                  class="flex flex-col items-center p-1.5 rounded-xl border transition ${
+                    isSel ? 'bg-[#EBF0F7] border-[#96ABC9] shadow-2xs' : 'bg-white border-[#E2D5CE] hover:bg-[#FAF5F0]'
+                  }">
+                  <div class="w-6 h-6">${item.svg}</div>
+                  <span class="text-[9px] font-bold text-[#8C766E] mt-0.5 truncate w-full text-center">${item.label}</span>
+                </button>`;
+            }).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function selectIconKey(key) {
+      document.getElementById('selectedIconKey').value = key;
+      renderIconPicker();
+    }
+
+    function renderManageCategories() {
       ['expense', 'income'].forEach(type => {
-        const targetEl = document.getElementById(type === 'expense' ? 'manageExpenseCats' : 'manageIncomeCats');
-        targetEl.innerHTML = (appData.categories[type] || []).map((cat, idx) => `
-          <span class="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full bg-[#FAF5F0] border border-[#E2D5CE] text-[#7A655E]">
-            <span class="w-4 h-4 inline-block">${getCatIconSvg(cat.iconKey)}</span>
-            <span>${escapeHtml(cat.name)}</span>
-            <button type="button" onclick="removeCategory('${type}', ${idx})" class="text-[#C48B98] hover:text-[#9E5B6B] ml-0.5">✕</button>
-          </span>
-        `).join('');
+        const container = document.getElementById(type === 'expense' ? 'manageExpenseCats' : 'manageIncomeCats');
+        const list = appData.categories[type] || [];
+        container.innerHTML = list.map((cat, idx) => {
+          const iconSvg = (ICONS_DB[cat.icon] || ICONS_DB.star).svg;
+          return `
+            <span class="inline-flex items-center gap-1.5 bg-[#FFFDFB] border border-[#E2D5CE] px-2.5 py-1 rounded-full text-xs font-bold text-[#7A655E]">
+              <span class="w-4 h-4 inline-block">${iconSvg}</span>
+              <span>${escapeHtml(cat.name)}</span>
+              ${list.length > 1 ? `<button onclick="deleteCategory('${type}', ${idx})" class="text-[#C97B8E] hover:text-[#A35468] ml-0.5 font-bold">✕</button>` : ''}
+            </span>`;
+        }).join('');
       });
     }
 
     function addCategoryFromManager() {
       const type = document.getElementById('newCatType').value;
-      const iconKey = document.getElementById('selectedIconKey').value || 'burger';
-      const nameInput = document.getElementById('newCatName').value.trim();
-      if (!nameInput) { alert('請輸入類別名稱'); return; }
-      if (appData.categories[type].some(c => c.name === nameInput)) { alert('已經有這個類別名稱囉！'); return; }
-      appData.categories[type].push({ name: nameInput, iconKey });
-      document.getElementById('newCatName').value = '';
+      const nameInput = document.getElementById('newCatName');
+      const name = nameInput.value.trim();
+      const icon = document.getElementById('selectedIconKey').value;
+
+      if (!name) return;
+      if (appData.categories[type].some(c => c.name === name)) {
+        alert('這個類別已經存在囉！');
+        return;
+      }
+
+      appData.categories[type].push({ name, icon });
+      nameInput.value = '';
       saveData();
-      renderCategoryManagerList();
+      renderManageCategories();
     }
 
-    function removeCategory(type, idx) {
-      if (appData.categories[type].length <= 1) { alert('至少需要保留一個類別喔！'); return; }
-      appData.categories[type].splice(idx, 1);
+    function deleteCategory(type, index) {
+      if (appData.categories[type].length <= 1) return;
+      appData.categories[type].splice(index, 1);
       saveData();
-      renderCategoryManagerList();
+      renderManageCategories();
     }
 
-    // --- 匯出 CSV ---
+    // ==================== CSV 匯出 ====================
     function exportCSV() {
       const activeLedger = appData.ledgers.find(l => l.id === appData.activeLedgerId);
-      const ledgerEntries = appData.entries
-        .filter(e => e.ledgerId === appData.activeLedgerId)
-        .sort((a, b) => a.date.localeCompare(b.date));
+      const list = appData.entries.filter(e => e.ledgerId === appData.activeLedgerId);
+      if (list.length === 0) {
+        alert('目前這個帳本還沒有紀錄可以匯出喔！');
+        return;
+      }
 
-      let csv = `\uFEFF帳本名稱,${activeLedger.name}\n`;
-      csv += '日期,收支類型,付款/入帳錢包,類別,店家,商品明細,備註,金額,累計結餘\n';
-
-      let runningBalance = 0;
-      ledgerEntries.forEach(row => {
-        const signedAmount = row.type === 'income' ? Number(row.amount) : -Number(row.amount);
-        runningBalance += signedAmount;
-        const typeText = row.type === 'income' ? '收入' : '支出';
-        const wallet = findWalletById(row.walletId);
-        const walletName = wallet ? wallet.name : '';
-        const noteText = row.note !== undefined ? row.note : (row.item || '');
-        const storeText = row.type === 'expense' ? (row.store || '') : '';
-        const prodList = row.type === 'expense' ? normalizeEntryProducts(row).join('、') : '';
-        csv += `${row.date},${typeText},${walletName},${row.category},${storeText},${prodList},${noteText},${signedAmount},${runningBalance}\n`;
+      let csv = '\uFEFF帳本,日期,類型,使用錢包,類別,店家,購買商品明細,金額,備註\n';
+      list.forEach(item => {
+        const typeText = item.type === 'expense' ? '支出' : '收入';
+        const walletName = getWalletNameById(item.walletId);
+        const storeText = (item.store || '').replace(/"/g, '""');
+        const productsText = (Array.isArray(item.products) ? item.products.join(' / ') : '').replace(/"/g, '""');
+        const noteText = (item.note || '').replace(/"/g, '""');
+        csv += `"${activeLedger.name}","${item.date}","${typeText}","${walletName}","${item.category}","${storeText}","${productsText}",${item.amount},"${noteText}"\n`;
       });
 
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${activeLedger.name}_記帳明細.csv`;
+      a.download = `記帳本_${activeLedger.name}_${new Date().toISOString().split('T')[0]}.csv`;
       a.click();
       URL.revokeObjectURL(url);
     }
 
-    renderAll();
+    function formatDateDisplay(dateStr) {
+      const [y, m, d] = dateStr.split('-');
+      const weekDays = ['週日', '週一', '週二', '週三', '週四', '週五', '週六'];
+      const dayName = weekDays[new Date(y, m - 1, d).getDay()];
+      return `${Number(m)}/${Number(d)} (${dayName})`;
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, m => ({ '&': '&', '<': '<', '>': '>', '"': '"', "'": ''' }[m]));
+    }
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+
+    init();
   </script>
 </body>
 </html>
