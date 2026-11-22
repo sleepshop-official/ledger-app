@@ -7,14 +7,10 @@
   "theme_color": "#D5E3F5",
   "icons": [
     {
-      "src": "https://placehold.co/192x192/FAF5F0/8C766E.png?text=Ledger",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "https://placehold.co/512x512/FAF5F0/8C766E.png?text=Ledger",
+      "src": "https://wsrv.nl/?url=data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20192%20192%22%3E%3Crect%20width%3D%22192%22%20height%3D%22192%22%20fill%3D%22%23FAF5F0%22%2F%3E%3Cpath%20d%3D%22M56%20136%20H136%20C154%20136%20166%20123%20166%20107%20C166%2093%20155%2081%20141%2079%20C137%2058%20118%2044%2096%2044%20C77%2044%2060%2055%2054%2072%20C38%2074%2026%2088%2026%20105%20C26%20122%2039%20136%2056%20136%20Z%22%20fill%3D%22%23FFFDFB%22%20stroke%3D%22%239E8880%22%20stroke-width%3D%227%22%2F%3E%3Cpath%20d%3D%22M52%20122%20H140%22%20stroke%3D%22%23CFD8E6%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E&output=png&w=512&h=512",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
