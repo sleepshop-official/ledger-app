@@ -953,14 +953,12 @@
       const keyword = inputEl.value.trim().toLowerCase();
       const allStores = getUniqueStoreHistory();
 
-      if (allStores.length === 0) {
+      if (!keyword || allStores.length === 0) {
         boxEl.classList.add('hidden');
         return;
       }
 
-      const matched = keyword
-        ? allStores.filter(s => s.toLowerCase().includes(keyword))
-        : allStores.slice(0, 8);
+      const matched = allStores.filter(s => s.toLowerCase().includes(keyword));
 
       if (matched.length === 0) {
         boxEl.classList.add('hidden');
