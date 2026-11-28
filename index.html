@@ -241,13 +241,13 @@
         <span id="navIconLedger" class="w-6 h-6 mb-0.5"></span>
         <span class="text-[11px]">記帳本</span>
       </button>
-      <button onclick="switchMainTab('chart')" id="navTabChart" class="flex flex-col items-center justify-center py-1 text-[#B09C94] font-bold">
-        <span id="navIconChart" class="w-6 h-6 mb-0.5"></span>
-        <span class="text-[11px]">圖表分析</span>
-      </button>
       <button onclick="switchMainTab('wallet')" id="navTabWallet" class="flex flex-col items-center justify-center py-1 text-[#B09C94] font-bold">
         <span id="navIconWallet" class="w-6 h-6 mb-0.5"></span>
         <span class="text-[11px]">錢包</span>
+      </button>
+       <button onclick="switchMainTab('chart')" id="navTabChart" class="flex flex-col items-center justify-center py-1 text-[#B09C94] font-bold">
+        <span id="navIconChart" class="w-6 h-6 mb-0.5"></span>
+        <span class="text-[11px]">圖表分析</span>
       </button>
     </div>
   </nav>
@@ -1249,7 +1249,7 @@
       });
 
       Object.keys(grouped).sort((a, b) => b.localeCompare(a)).forEach(date => {
-        const dayItems = grouped[date];
+        const dayItems = grouped[date].slice().reverse();
         let dayInc = 0;
         let dayExp = 0;
         dayItems.forEach(i => {
@@ -1831,9 +1831,13 @@
       const container = document.getElementById('entryWalletChips');
       const hiddenInput = document.getElementById('entryWalletId');
 
+      const lastEntry = appData.entries[appData.entries.length - 1];
+      const fallbackWalletId = (lastEntry && appData.wallets.some(w => w.id === lastEntry.walletId))
+        ? lastEntry.walletId
+        : (appData.wallets[0] ? appData.wallets[0].id : '');
       const activeId = selectedWalletId && appData.wallets.some(w => w.id === selectedWalletId)
         ? selectedWalletId
-        : (appData.wallets[0] ? appData.wallets[0].id : '');
+        : fallbackWalletId;
       hiddenInput.value = activeId;
 
       container.innerHTML = appData.wallets.map(w => {
@@ -1862,7 +1866,7 @@
 
       const activeCat = selectedCat && list.some(c => c.name === selectedCat)
         ? selectedCat
-        : (list[0] ? list[0].name : '其他');
+        : '';
       hiddenInput.value = activeCat;
 
       chipsEl.innerHTML = list.map(cat => {
